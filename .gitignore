@@ -63,3 +63,5 @@ Thumbs.db
 .env.ci
 .env.qa
 .env.prod
+# Local Netlify folder
+.netlify
