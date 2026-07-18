@@ -1,25 +1,38 @@
 # Willow Bend Family Clinic — Use Case
 
-**One-liner:** A modern, SEO-conscious website for a local clinic with appointment booking, a calendar, a chatbot, and lightweight CMS-style content management.
-**Status:** Active development (client project)
-**Stack:** React 18, TypeScript, Vite 7, Tailwind CSS, Firebase (including Data Connect with generated client code), EmailJS, Vitest + Testing Library, Netlify
+**One-liner:** A production-level demo website for a fictional family-practice clinic — appointment requests with human approval, a patient portal, lightweight CMS content, admin tooling, and an AI care assistant that degrades gracefully to an offline engine.
+**Status:** Active demo (all clinic data is fictional)
+**Stack:** React 18, TypeScript, Vite 7, Tailwind CSS, Firebase (Auth, Firestore, Data Connect codegen), Netlify (hosting + Functions), OpenAI (Willow AI), EmailJS, Vitest + Testing Library
 
 ## Problem
-A small local clinic needs what large health systems get from expensive platforms — online appointment requests, findability in search, and quick answers to common questions — on a small-business budget. This project delivers that with a fast static-first React site and Firebase as the managed backend, so there is no server to maintain.
+
+A small local clinic needs what large health systems get from expensive platforms — online appointment requests, findability in search, quick answers to common questions — on a small-business budget. This project demonstrates that with a static-first React site, Firebase as the managed backend, and one serverless function for AI, so there is no server to maintain.
 
 ## What I Built
-I built a feature-sliced React + TypeScript app with dedicated modules for appointments, calendar, chatbot, CMS content, messages, auth, and SEO. Firebase provides the backend, including Firebase Data Connect with generated typed client code (src/dataconnect-generated). EmailJS handles contact/notification email without exposing a server. The public/ folder ships robots.txt, sitemap.xml, and security headers (_headers) for search and hardening, and the SEO module manages per-page metadata. The project has a Vitest + Testing Library test setup and deploys via Netlify.
+
+This started as a real client build, then was rebranded and fully sanitized into the fictional **Willow Bend Family Clinic** (Meridian, ID) so it can be shown publicly. On top of that base:
+
+- **Design system:** implemented a full design handoff — sage/cream token system with light and dark themes, Bricolage Grotesque + Figtree typography, and rebuilt Home, Services, Request, Patient Portal, and Calendar pages. Token aliases let legacy pages restyle without churn.
+- **Appointments, human-approved:** patients request a time at `/request`; clinic staff approve, reject, cancel, or archive from the admin portal. Approval is never automated — that's a hard project rule.
+- **Patient portal:** live Firestore sync of appointment status, portal messages from staff, and a month calendar view.
+- **Admin tooling:** appointment management, CMS-style page content editing, and a Messages & Archives page — view/edit/delete sent portal messages and clear old appointment archives with audit flags.
+- **Willow, the AI care assistant:** a full-page chat surface plus a floating widget. A Netlify Function keeps the OpenAI key server-side and wraps it in guardrails (navigation/scheduling help only, no medical advice, never claims to book — staff approve everything). Emergencies short-circuit to an instant offline 911 answer, and if no key is configured the whole thing falls back to a deterministic keyword engine, so the demo always works.
+- **Engineering standards:** Keep-a-Changelog discipline, mirrored AGENTS.md/CLAUDE.md agent rules, ADRs (Nygard pattern), versioning and documentation standards, and a sanitized `.env.example`.
 
 ## Skills Demonstrated
-React, TypeScript, Vite, Tailwind CSS, Firebase (Auth, Data Connect), typed codegen workflows, EmailJS integration, SEO fundamentals (sitemap, robots, metadata), security headers, component testing with Vitest and Testing Library, Netlify deployment, client delivery
+
+React, TypeScript, Vite, Tailwind, design-token systems and theming, Firebase (Auth, Firestore live subscriptions, transactions for archive audit trails), serverless functions on Netlify, LLM integration with guardrails and graceful degradation, SEO fundamentals (sitemap, robots, per-page metadata), accessibility (skip links, focus rings, reduced motion, ARIA), client sanitization and rebranding, documentation and changelog discipline
 
 ## Outcome / Evidence
-In active development for a real client. The architecture (serverless Firebase backend, static-first frontend) is chosen deliberately so the clinic can run it with near-zero ops burden after handoff. No README yet — this use case doubles as the project's first summary document.
+
+A public-safe, production-shaped demo: every trace of the original client removed, a cohesive design system across the site, and an AI assistant that is safe by construction — the model can't approve an appointment, can't give medical advice, and the site works identically with the AI turned off.
 
 ## Interview Talking Points
-- Feature-sliced structure (appointments, calendar, chatbot, cms, seo as first-class modules) keeps a client site maintainable as it grows, instead of one components/ junk drawer.
-- Firebase Data Connect with generated typed clients gives backend type safety without me running a backend for the client.
-- SEO and security headers were built in from the start because for a local clinic, being found on Google is the core business requirement.
+
+- The AI fallback design: any failure (no key, timeout, upstream error) silently drops to the offline keyword engine — the demo never breaks in front of an audience, and emergency inputs never wait on a network round-trip.
+- Human-in-the-loop by architecture, not policy: the LLM has no write path to appointments; approval only exists in the admin UI.
+- Token-alias strategy: rebranding a themed app without touching every file — new design tokens with legacy names aliased, so unrebuilt pages inherit the new look.
+- Archive deletes use Firestore transactions with audit flags (deleted-before-appointment, deleted-while-approved) — small clinic, real accountability.
 
 ---
 LAHA — Love All Humans Always.

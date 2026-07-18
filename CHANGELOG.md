@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Willow AI**: OpenAI-backed replies via a Netlify Function
+  (`/api/willow`) with the key kept server-side. Emergency inputs
+  short-circuit to an instant offline 911 answer, and any AI failure
+  (no key, timeout, upstream error) silently falls back to the offline
+  keyword engine — the assistant works with zero configuration.
+  New `npm run dev:ai` script (netlify dev) for local AI development.
+  Guardrails in the system prompt: navigation/scheduling only, no medical
+  advice, never claims to book — appointments stay human-approved
+  (ADR 0003).
+
 - Admin **Messages & Archives** page (`/admin/messages`): view all sent
   portal messages with full bodies, filter by recipient/subject/text,
   edit or permanently delete messages, and view archived appointments

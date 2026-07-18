@@ -3,6 +3,15 @@
   publish = "dist"
   environment = { SECRETS_SCAN_OMIT_KEYS = "VITE_FIREBASE_API_KEY", SECRETS_SCAN_OMIT_PATHS = "dist/**" }
 
+[functions]
+  directory = "netlify/functions"
+
+# API redirect must come before the SPA catch-all (redirect order matters).
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

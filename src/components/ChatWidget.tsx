@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { respond } from "../chatbot/engine";
+import { classifyTurn, respond } from "../chatbot/engine";
+import { askWillow } from "../chatbot/aiClient";
+import { baseQuickReplies } from "../chatbot/kb";
 import type { ChatMessage, ChatRole } from "../chatbot/types";
 import {
   clearHistory,
@@ -19,7 +21,7 @@ import {
 } from "./WillowBits";
 
 const STATE_SCOPE = "widget";
-const TYPING_MS = 700;
+const MIN_TYPING_MS = 400;
 
 function uid() {
   return Math.random().toString(16).slice(2) + Date.now().toString(16);
@@ -52,6 +54,7 @@ export default function ChatWidget() {
   const listRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sendSeq = useRef(0);
 
   // Auto-seed greeting if empty
   useEffect(() => {
@@ -104,38 +107,68 @@ export default function ChatWidget() {
     setMessages((prev) => [...prev, m].slice(-200));
   }
 
-  function onSend(payload?: string) {
+  async function onSend(payload?: string) {
     const raw = (payload ?? text).trim();
     if (!raw || typing) return;
 
-    pushMessage({ id: uid(), sender: "user", ts: Date.now(), text: raw });
+    const userMsg: ChatMessage = {
+      id: uid(),
+      sender: "user",
+      ts: Date.now(),
+      text: raw,
+    };
+    pushMessage(userMsg);
     setText("");
 
-    const ans = respond(raw, {
+    const ctx = {
       role: chatRole,
       userEmail: user?.email ?? undefined,
       userUid: user?.uid ?? undefined,
       state,
-    });
+    };
 
-    if (ans.nextState !== undefined) setState(ans.nextState);
+    const answerOffline = () => {
+      const ans = respond(raw, ctx);
+      if (ans.nextState !== undefined) setState(ans.nextState);
+      return { text: ans.text, quickReplies: ans.quickReplies ?? [] };
+    };
 
-    // Presentation-only typing delay before showing the engine's reply
+    // Emergency short-circuit: instant offline answer, no network round-trip.
+    const turn = classifyTurn(raw);
+    if (turn.intent === "emergency" && turn.confidence >= 0.8) {
+      const ans = answerOffline();
+      pushMessage({ id: uid(), sender: "bot", ts: Date.now(), ...ans });
+      return;
+    }
+
+    const seq = ++sendSeq.current;
     setTyping(true);
+    const started = Date.now();
+
+    let reply: { text: string; quickReplies: ChatMessage["quickReplies"] };
+    if (state) {
+      // Mid-flow (e.g. awaiting_status_detail): stay on the offline engine.
+      reply = answerOffline();
+    } else {
+      try {
+        const text = await askWillow([...messages, userMsg], chatRole);
+        reply = { text, quickReplies: baseQuickReplies(chatRole) };
+      } catch {
+        reply = answerOffline();
+      }
+    }
+
+    const wait = Math.max(0, MIN_TYPING_MS - (Date.now() - started));
     typingTimer.current = setTimeout(() => {
+      if (seq !== sendSeq.current) return;
       setTyping(false);
-      pushMessage({
-        id: uid(),
-        sender: "bot",
-        ts: Date.now(),
-        text: ans.text,
-        quickReplies: ans.quickReplies ?? [],
-      });
-    }, TYPING_MS);
+      pushMessage({ id: uid(), sender: "bot", ts: Date.now(), ...reply });
+    }, wait);
   }
 
   function onClear() {
     if (typingTimer.current) clearTimeout(typingTimer.current);
+    sendSeq.current++;
     setTyping(false);
     clearHistory(); // shared history clear
     saveState(undefined, STATE_SCOPE);
