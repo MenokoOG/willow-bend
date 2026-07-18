@@ -1,7 +1,10 @@
 [build]
   command = "npm run build"
   publish = "dist"
-  environment = { SECRETS_SCAN_OMIT_KEYS = "VITE_FIREBASE_API_KEY", SECRETS_SCAN_OMIT_PATHS = "dist/**" }
+  # Firebase *client* config is public by design (it ships in the JS
+  # bundle); omit it from secrets scanning. Real secrets (OPENAI_API_KEY)
+  # stay scanned.
+  environment = { SECRETS_SCAN_OMIT_KEYS = "VITE_FIREBASE_API_KEY,VITE_FIREBASE_PROJECT_ID,VITE_FIREBASE_AUTH_DOMAIN,VITE_FIREBASE_STORAGE_BUCKET,VITE_FIREBASE_MESSAGING_SENDER_ID,VITE_FIREBASE_APP_ID", SECRETS_SCAN_OMIT_PATHS = "dist/**" }
 
 [functions]
   directory = "netlify/functions"

@@ -50,6 +50,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Netlify build failed secrets scanning after `.firebaserc` gained the
+  Firebase project id: all `VITE_FIREBASE_*` client-config keys are now
+  in `SECRETS_SCAN_OMIT_KEYS` (they ship in the JS bundle by design and
+  are not secrets); `OPENAI_API_KEY` remains scanned.
 - `useAppointments`: the post-write refresh (`request`,
   `archiveAndDelete`) re-fetches the full appointments list, which
   Firestore rules only permit for admins — a patient's successful
