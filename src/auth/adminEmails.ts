@@ -1,5 +1,6 @@
 export const ADMIN_EMAILS = [
-  "",
+  // Test admin account for MVP testing — create this user in Firebase Auth.
+  "testadmin@example.com",
 ] as const;
 
 export function isAdminEmail(email?: string | null): boolean {

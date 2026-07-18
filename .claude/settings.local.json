@@ -15,7 +15,16 @@
       "Bash(mkdir -p docs/adr)",
       "Bash(sed 's/# AGENTS.md/# CLAUDE.md/; s/\\(`CLAUDE.md` mirrors this file — keep them in sync.\\)/\\(`AGENTS.md` mirrors this file — keep them in sync.\\)/' AGENTS.md)",
       "Bash(npx vitest *)",
-      "Bash(wsl.exe *)"
+      "Bash(wsl.exe *)",
+      "Bash(git config *)",
+      "Bash(git pull *)",
+      "Bash(git push *)",
+      "Bash(git switch *)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'docs: changelog entry for admin email removal *)",
+      "PowerShell(gh pr *)",
+      "Bash(git stash *)",
+      "Bash(git reset *)"
     ]
   }
 }
