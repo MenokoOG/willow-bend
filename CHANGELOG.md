@@ -50,6 +50,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Netlify build ran with a stale cached `node_modules` still containing
+  tailwindcss v4 from the pre-pin era, failing with the v4 PostCSS error
+  even though `package.json`/lockfile pin v3. The build command is now
+  `npm ci && npm run build` so every build installs exactly from the
+  lockfile.
 - Netlify build failed secrets scanning after `.firebaserc` gained the
   Firebase project id: all `VITE_FIREBASE_*` client-config keys are now
   in `SECRETS_SCAN_OMIT_KEYS` (they ship in the JS bundle by design and

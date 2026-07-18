@@ -1,5 +1,8 @@
 [build]
-  command = "npm run build"
+  # npm ci wipes node_modules and installs exactly from the lockfile —
+  # Netlify's restored dependency cache once resurrected tailwindcss v4
+  # (pinned back to v3 in PR #6) and broke the build.
+  command = "npm ci && npm run build"
   publish = "dist"
   # Firebase *client* config is public by design (it ships in the JS
   # bundle); omit it from secrets scanning. Real secrets (OPENAI_API_KEY)
