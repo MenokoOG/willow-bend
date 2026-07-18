@@ -27,6 +27,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Removed the maintainer's real email address from the admin allowlists
+  (`src/auth/admin.ts`, `src/auth/adminEmails.ts`); admin emails should be
+  configured locally instead of committed to the repository.
 - Implemented the Willow Bend design system from the design handoff:
   warm sage/cream palette with full light + dark themes, Bricolage
   Grotesque + Figtree typography, and rebuilt UI primitives
