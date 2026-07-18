@@ -32,6 +32,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (renormalized `LICENSE`, `CHANGELOG.md`, `package.json`,
   `package-lock.json`).
 
+### Security
+
+- `npm audit fix`: resolved all reported advisories (critical
+  `protobufjs` chain pulled in via Firebase tooling) — `npm audit` is
+  now clean.
+
 ### Changed
 
 - Admin allowlist now reads from the `VITE_ADMIN_EMAILS` env var
