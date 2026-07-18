@@ -65,3 +65,6 @@ Thumbs.db
 .env.prod
 # Local Netlify folder
 .netlify
+
+# Claude Code local (per-machine) settings
+.claude/settings.local.json
