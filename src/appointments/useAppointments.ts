@@ -41,6 +41,18 @@ export function useAppointments() {
 
   const { value, loading, execute } = useAsync(fetchAll, []);
 
+  // Refresh the admin list after a write, but never let it fail the
+  // write itself: Firestore rules only allow admins to list ALL
+  // appointments, so for patients/public users this read is denied
+  // even though their write succeeded.
+  const refreshQuietly = async () => {
+    try {
+      await execute();
+    } catch {
+      // non-admin: expected permission-denied on the full list
+    }
+  };
+
   // Create appointment request (public)
   const request = async (
     data: Omit<Appointment, "id" | "status" | "createdAt">
@@ -50,7 +62,7 @@ export function useAppointments() {
       status: "requested",
       createdAt: Date.now(),
     });
-    await execute();
+    await refreshQuietly();
   };
 
   // Admin updates status
@@ -106,7 +118,7 @@ export function useAppointments() {
       tx.delete(srcRef);
     });
 
-    await execute();
+    await refreshQuietly();
   };
 
   /**

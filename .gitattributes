@@ -1,0 +1,15 @@
+# Normalize all text files to LF in the repo and on checkout.
+# This repo lives in WSL but is sometimes touched by Windows git;
+# without this, every file flip-flops CRLF/LF and produces
+# whole-file diffs (e.g. the LICENSE rewrite in PR #8).
+* text=auto eol=lf
+
+# Binary files — never touch line endings.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
