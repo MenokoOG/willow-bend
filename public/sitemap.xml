@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://willowbendclinic.example/</loc>
+  </url>
+  <url>
+    <loc>https://willowbendclinic.example/services</loc>
+  </url>
+  <url>
+    <loc>https://willowbendclinic.example/testimonials</loc>
+  </url>
+  <url>
+    <loc>https://willowbendclinic.example/contact</loc>
+  </url>
+  <url>
+    <loc>https://willowbendclinic.example/request</loc>
+  </url>
+</urlset>

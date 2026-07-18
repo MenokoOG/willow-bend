@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(///wsl.localhost/Ubuntu/home/jefft/development/**)",
+      "Bash(sed 's/=.*/=/' .env)",
+      "Bash(xargs sed -i 's/Snake River Adult Medicine/Willow Bend Family Clinic/g')",
+      "Bash(sed -i -e 's|Primary Care in Clarkston, WA|Family Medicine in Meridian, ID|g' -e 's|provides primary care in Clarkston, WA. Respectful, human-centered care focused on adult medicine and long-term health.|provides family medicine in Meridian, ID. Respectful, human-centered care for every member of the family, focused on long-term health.|' -e 's|https://snakeriveram.netlify.app/|https://willowbendclinic.example/|g' -e 's|primary care focused on adult medicine and long-term health.|family-practice care for every member of the family, focused on long-term health.|' -e 's|primary care in Clarkston, WA.|family medicine in Meridian, ID.|' index.html)",
+      "Bash(sed -i 's/srams_/wbc_/g' src/chatbot/storage.ts src/chatbot/useChatbot.ts src/pages/admin/AdminContentEditor.tsx src/ui/ThemeToggle.tsx)",
+      "Bash(sed -i 's/srams-chatbot-panel/wbc-chatbot-panel/g' src/components/ChatWidget.tsx)",
+      "Bash(sed -i 's/Example: Brian/Example: Alex/' src/pages/patient/PatientAccount.tsx)",
+      "Bash(sed -i 's|https://snakeriveram.netlify.app|https://willowbendclinic.example|g' public/robots.txt public/sitemap.xml)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(cp \"C:/Users/jefft/OneDrive/Desktop/Reference/Prompt-Agent-mds-library/claude-mds/standards/VERSIONING.md\" ./VERSIONING.md)",
+      "Bash(cp \"C:/Users/jefft/OneDrive/Desktop/Reference/Prompt-Agent-mds-library/claude-mds/standards/DOCUMENTATION.md\" ./DOCUMENTATION.md)",
+      "Bash(mkdir -p docs/adr)",
+      "Bash(sed 's/# AGENTS.md/# CLAUDE.md/; s/\\(`CLAUDE.md` mirrors this file — keep them in sync.\\)/\\(`AGENTS.md` mirrors this file — keep them in sync.\\)/' AGENTS.md)",
+      "Bash(npx vitest *)",
+      "Bash(wsl.exe *)"
+    ]
+  }
+}

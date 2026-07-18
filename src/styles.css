@@ -1,0 +1,273 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================
+   THEME SYSTEM (single source of truth)
+   <html data-theme="dark"> or <html data-theme="light">
+   ========================================================= */
+
+:root {
+  /* Default (dark) */
+  --bg: #0b0e13;
+  --bg2: #070a0f;
+  --panel: rgba(255, 255, 255, 0.06);
+  --panel2: rgba(255, 255, 255, 0.09);
+  --text: rgba(255, 255, 255, 0.92);
+  --muted: rgba(255, 255, 255, 0.72);
+  --muted2: rgba(255, 255, 255, 0.58);
+  --border: rgba(255, 255, 255, 0.14);
+
+  --ring: rgba(255, 255, 255, 0.55);
+
+  /* Accent system (accessible) */
+  --primary: #22c55e; /* green */
+  --primary2: #06b6d4; /* cyan */
+  --warn: #f59e0b; /* amber */
+  --danger: #ef4444; /* red */
+
+  /* Background image control */
+  --bg-image: none; /* set per theme below */
+  --bg-overlay: linear-gradient(
+    180deg,
+    rgba(11, 14, 19, 0.88),
+    rgba(11, 14, 19, 0.92)
+  );
+}
+
+/* Light theme variables */
+html[data-theme="light"] {
+  --bg: #f7f8fb;
+  --bg2: #eef1f7;
+  --panel: rgba(10, 12, 18, 0.06);
+  --panel2: rgba(10, 12, 18, 0.08);
+  --text: rgba(9, 12, 18, 0.92);
+  --muted: rgba(9, 12, 18, 0.72);
+  --muted2: rgba(9, 12, 18, 0.58);
+  --border: rgba(10, 12, 18, 0.14);
+
+  --ring: rgba(10, 12, 18, 0.55);
+
+  --primary: #16a34a;
+  --primary2: #0891b2;
+  --warn: #b45309;
+  --danger: #dc2626;
+
+  --bg-overlay: linear-gradient(
+    180deg,
+    rgba(247, 248, 251, 0.78),
+    rgba(247, 248, 251, 0.92)
+  );
+}
+
+/* =========================================================
+   PAGE BACKGROUND (with optional image)
+   Put your images in /public/backgrounds/
+   ========================================================= */
+
+html[data-theme="dark"] {
+  --bg-image: url("/backgrounds/srams-dark.webp");
+}
+
+html[data-theme="light"] {
+  --bg-image: url("/backgrounds/srams-light.webp");
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* Background image layer with overlay to preserve readability */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-image: var(--bg-overlay), var(--bg-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Subtle vignette for contrast */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(
+    1200px 800px at 30% 10%,
+    rgba(6, 182, 212, 0.1),
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+@media (max-width: 420px) {
+  .btn-hero, .btn-ghost {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* =========================================================
+   GLOBAL UI PRIMITIVES
+   ========================================================= */
+
+.card {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 1.25rem;
+}
+
+.btn-hero {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.05rem;
+  border-radius: 9999px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--primary2) 20%, transparent),
+    color-mix(in srgb, var(--warn) 16%, transparent)
+  );
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.btn-hero:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 0.95rem;
+  border-radius: 0.9rem;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--panel) 55%, transparent);
+  color: var(--text);
+}
+
+.btn-ghost:hover {
+  background: color-mix(in srgb, var(--panel2) 70%, transparent);
+}
+
+.btn-ghost:focus-visible,
+.btn-hero:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+/* Inputs: large, readable, accessible */
+.input {
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--panel) 70%, transparent);
+  color: var(--text);
+  padding: 0.85rem 0.95rem;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.input:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--ring);
+  border-color: color-mix(in srgb, var(--primary2) 35%, var(--border));
+}
+
+/* Placeholder fix: never overflow, better contrast */
+.input::placeholder {
+  color: var(--muted2);
+  opacity: 1;
+}
+
+/* Textareas should not shrink readability */
+textarea.input {
+  resize: vertical;
+  min-height: 8rem;
+}
+
+/* =========================================================
+   THEME UTILITY CLASSES (so you don't inline-style everything)
+   ========================================================= */
+
+.text-theme {
+  color: var(--text);
+}
+
+.text-muted {
+  color: var(--muted);
+}
+
+.text-muted2 {
+  color: var(--muted2);
+}
+
+.bg-panel {
+  background: var(--panel);
+}
+
+.bg-panel2 {
+  background: var(--panel2);
+}
+
+.border-theme {
+  border-color: var(--border);
+}
+
+/* =========================================================
+   CALENDAR DAY STATES
+   ========================================================= */
+
+.calendar-day {
+  height: 4rem;
+  border-radius: 1.25rem;
+  border-width: 1px;
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  outline: none;
+}
+
+@media (min-width: 640px) {
+  .calendar-day {
+    height: 5rem;
+  }
+}
+
+.calendar-day:hover {
+  transform: translateY(-1px);
+}
+
+.calendar-day:focus-visible {
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+.calendar-day--out {
+  opacity: 0.6;
+}
+
+/* TODAY: glow + slightly brighter border */
+.day--today {
+  border-color: color-mix(in srgb, var(--primary2) 45%, var(--border));
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--primary2) 25%, transparent),
+    0 12px 24px rgba(0, 0, 0, 0.18);
+}
+
+/* SELECTED: stronger ring + subtle inset */
+.day--selected {
+  border-color: color-mix(in srgb, var(--warn) 50%, var(--border));
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--warn) 22%, transparent),
+    inset 0 0 0 1px color-mix(in srgb, var(--warn) 30%, transparent);
+}
