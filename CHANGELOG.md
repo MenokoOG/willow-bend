@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Replaced the `testadmin@example.com` placeholder in the admin allowlists
+  (`src/auth/admin.ts`, `src/auth/adminEmails.ts`) with the real admin
+  account emails. Note: Firestore security rules must list the same
+  emails in `isAdminEmail()` for admin access to actually work
+  server-side.
+
 ### Fixed
 
 - Untracked `.claude/settings.local.json` and added it to `.gitignore` —
