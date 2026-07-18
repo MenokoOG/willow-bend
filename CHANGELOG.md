@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Netlify build failure after Dependabot bumped Tailwind CSS to v4: pinned
+  `tailwindcss` back to `^3.4.17`, since the project uses the v3 PostCSS
+  plugin setup (`postcss.config`, `tailwind.config.ts`, `@tailwind`
+  directives). A future v4 migration should use `@tailwindcss/postcss`.
+
 ### Added
 
 - `LICENSE` file: proprietary, all-rights-reserved terms — the code is
