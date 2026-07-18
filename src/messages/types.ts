@@ -16,4 +16,5 @@ export interface PortalMessage {
 
   // optional
   readAt?: number;
+  editedAt?: number;
 }

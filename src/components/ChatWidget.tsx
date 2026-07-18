@@ -1,10 +1,25 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { respond } from "../chatbot/engine";
 import type { ChatMessage, ChatRole } from "../chatbot/types";
-import { clearHistory, loadHistory, loadState, saveHistory, saveState } from "../chatbot/storage";
+import {
+  clearHistory,
+  loadHistory,
+  loadState,
+  saveHistory,
+  saveState,
+} from "../chatbot/storage";
 import { useAuth } from "../auth/AuthContext";
+import {
+  ChatBubble,
+  SparkleIcon,
+  TypingDots,
+  WILLOW_DISCLAIMER,
+  WillowAvatar,
+} from "./WillowBits";
 
 const STATE_SCOPE = "widget";
+const TYPING_MS = 700;
 
 function uid() {
   return Math.random().toString(16).slice(2) + Date.now().toString(16);
@@ -18,6 +33,7 @@ function deriveRole(args: { userEmail?: string; role?: string | null }): ChatRol
 
 export default function ChatWidget() {
   const { user, role } = useAuth();
+  const location = useLocation();
 
   const chatRole = useMemo(
     () => deriveRole({ userEmail: user?.email ?? undefined, role: role ?? null }),
@@ -26,6 +42,7 @@ export default function ChatWidget() {
 
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
+  const [typing, setTyping] = useState(false);
 
   // ✅ shared history across surfaces
   const [messages, setMessages] = useState<ChatMessage[]>(() => loadHistory());
@@ -34,6 +51,7 @@ export default function ChatWidget() {
 
   const listRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
+  const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Auto-seed greeting if empty
   useEffect(() => {
@@ -44,7 +62,7 @@ export default function ChatWidget() {
         id: uid(),
         sender: "bot",
         ts: Date.now(),
-        text: "Hi 👋 I’m the site helper bot. Ask me about appointments, portal login, or admin tools.",
+        text: "Hi, I'm Willow 🌿 I can help with appointments, portal login, and finding your way around the clinic site.",
         quickReplies: [
           { id: "qr_request", label: "Request appointment", payload: "request appointment" },
           { id: "qr_status", label: "Check status", payload: "check my appointment status" },
@@ -74,7 +92,13 @@ export default function ChatWidget() {
     if (!el) return;
     el.scrollTop = el.scrollHeight;
     setTimeout(() => inputRef.current?.focus(), 0);
-  }, [messages, open]);
+  }, [messages, open, typing]);
+
+  useEffect(() => {
+    return () => {
+      if (typingTimer.current) clearTimeout(typingTimer.current);
+    };
+  }, []);
 
   function pushMessage(m: ChatMessage) {
     setMessages((prev) => [...prev, m].slice(-200));
@@ -82,7 +106,7 @@ export default function ChatWidget() {
 
   function onSend(payload?: string) {
     const raw = (payload ?? text).trim();
-    if (!raw) return;
+    if (!raw || typing) return;
 
     pushMessage({ id: uid(), sender: "user", ts: Date.now(), text: raw });
     setText("");
@@ -96,17 +120,23 @@ export default function ChatWidget() {
 
     if (ans.nextState !== undefined) setState(ans.nextState);
 
-    // ✅ Store quickReplies on the bot message (no recompute drift)
-    pushMessage({
-      id: uid(),
-      sender: "bot",
-      ts: Date.now(),
-      text: ans.text,
-      quickReplies: ans.quickReplies ?? [],
-    });
+    // Presentation-only typing delay before showing the engine's reply
+    setTyping(true);
+    typingTimer.current = setTimeout(() => {
+      setTyping(false);
+      pushMessage({
+        id: uid(),
+        sender: "bot",
+        ts: Date.now(),
+        text: ans.text,
+        quickReplies: ans.quickReplies ?? [],
+      });
+    }, TYPING_MS);
   }
 
   function onClear() {
+    if (typingTimer.current) clearTimeout(typingTimer.current);
+    setTyping(false);
     clearHistory(); // shared history clear
     saveState(undefined, STATE_SCOPE);
     setState(undefined);
@@ -131,70 +161,103 @@ export default function ChatWidget() {
     return lastBot?.quickReplies ?? [];
   }, [messages]);
 
+  // The full-page Willow surface has its own chat UI
+  if (location.pathname === "/help") return null;
+
   return (
     <>
       <div className="fixed bottom-4 right-4 z-50">
         <button
           type="button"
-          className="btn-hero px-4 py-3 rounded-2xl shadow-lg"
+          className="btn-hero !px-4 !py-3"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
           aria-controls="wbc-chatbot-panel"
         >
-          {open ? "Close Help" : "Help Chat"}
+          <SparkleIcon size={16} />
+          {open ? "Close" : "Ask Willow"}
         </button>
       </div>
 
       {open && (
-        <div id="wbc-chatbot-panel" className="fixed bottom-20 right-4 z-50 w-[min(420px,calc(100vw-2rem))]">
-          <div className="card p-4 sm:p-5">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className="text-lg font-semibold">Help Chat</div>
-                <div className="text-sm" style={{ color: "var(--muted)" }}>
-                  Offline assistant • Role: <span className="font-semibold">{chatRole}</span>
+        <div
+          id="wbc-chatbot-panel"
+          className="fixed bottom-20 right-4 z-50 w-[min(420px,calc(100vw-2rem))]"
+        >
+          <div className="card overflow-hidden">
+            {/* Header */}
+            <div
+              className="flex items-center justify-between gap-3 px-4 py-3"
+              style={{ borderBottom: "1px solid var(--line2)" }}
+            >
+              <div className="flex items-center gap-2.5">
+                <WillowAvatar size={34} />
+                <div>
+                  <div className="font-display text-sm font-bold">Willow</div>
+                  <div className="text-xs" style={{ color: "#6a9070" }}>
+                    ● Online — care assistant
+                  </div>
                 </div>
               </div>
 
-              <div className="flex gap-2">
-                <button type="button" className="btn-ghost text-sm" onClick={onClear}>
+              <div className="flex items-center gap-1.5">
+                <Link
+                  to="/help"
+                  className="text-xs font-semibold px-2"
+                  style={{ color: "var(--primary)" }}
+                  onClick={() => setOpen(false)}
+                >
+                  Full chat
+                </Link>
+                <button
+                  type="button"
+                  className="btn-ghost text-xs !px-3 !py-1.5"
+                  onClick={onClear}
+                >
                   Clear
                 </button>
-                <button type="button" className="btn-ghost text-sm" onClick={() => setOpen(false)}>
-                  X
+                <button
+                  type="button"
+                  className="icon-btn !h-8 !w-8"
+                  onClick={() => setOpen(false)}
+                  aria-label="Close chat"
+                >
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    aria-hidden
+                  >
+                    <path d="M6 6l12 12M18 6L6 18" />
+                  </svg>
                 </button>
               </div>
             </div>
 
-            <div ref={listRef} className="mt-4 space-y-3 max-h-[50vh] overflow-auto pr-1" aria-live="polite">
+            {/* Messages */}
+            <div
+              ref={listRef}
+              className="px-4 py-4 space-y-3 max-h-[50vh] overflow-auto"
+              aria-live="polite"
+            >
               {messages.map((m) => (
-                <div
-                  key={m.id}
-                  className={[
-                    "rounded-2xl border px-3 py-2 text-sm whitespace-pre-wrap",
-                    m.sender === "user" ? "ml-10" : "mr-10",
-                  ].join(" ")}
-                  style={{
-                    borderColor: "var(--border)",
-                    background: m.sender === "user" ? "var(--panel2)" : "var(--panel)",
-                    color: "var(--text)",
-                  }}
-                >
-                  <div className="text-xs mb-1" style={{ color: "var(--muted)" }}>
-                    {m.sender === "user" ? "You" : "Bot"}
-                  </div>
-                  {m.text}
-                </div>
+                <ChatBubble key={m.id} message={m} />
               ))}
+              {typing && <TypingDots />}
             </div>
 
-            {lastBotQuickReplies.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-2">
+            {/* Quick replies */}
+            {!typing && lastBotQuickReplies.length > 0 && (
+              <div className="px-4 pb-2 flex flex-wrap gap-2">
                 {lastBotQuickReplies.slice(0, 6).map((q) => (
                   <button
                     key={q.id}
                     type="button"
-                    className="btn-ghost text-sm"
+                    className="chip text-xs !px-3.5 !py-2"
                     onClick={() => onSend(q.payload)}
                     aria-label={q.label}
                   >
@@ -204,28 +267,33 @@ export default function ChatWidget() {
               </div>
             )}
 
-            <form
-              className="mt-4 flex gap-2"
-              onSubmit={(e) => {
-                e.preventDefault();
-                onSend();
-              }}
+            {/* Composer */}
+            <div
+              className="px-4 py-3 space-y-2"
+              style={{ borderTop: "1px solid var(--line2)" }}
             >
-              <input
-                ref={inputRef}
-                className="input flex-1"
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                placeholder="Type a question…"
-                aria-label="Chat input"
-              />
-              <button type="submit" className="btn-hero px-4">
-                Send
-              </button>
-            </form>
-
-            <div className="mt-3 text-xs" style={{ color: "var(--muted)" }}>
-              Tip: ask “request appointment”, “check status”, “login help”, or “manage appointments”.
+              <form
+                className="flex gap-2"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  onSend();
+                }}
+              >
+                <input
+                  ref={inputRef}
+                  className="input flex-1 !rounded-2xl"
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder="Ask Willow anything…"
+                  aria-label="Chat input"
+                />
+                <button type="submit" className="btn-hero !px-4" disabled={typing}>
+                  Send
+                </button>
+              </form>
+              <p className="text-[11px]" style={{ color: "var(--muted2)" }}>
+                {WILLOW_DISCLAIMER}
+              </p>
             </div>
           </div>
         </div>

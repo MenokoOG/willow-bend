@@ -3,83 +3,112 @@
 @tailwind utilities;
 
 /* =========================================================
-   THEME SYSTEM (single source of truth)
-   <html data-theme="dark"> or <html data-theme="light">
+   WILLOW BEND THEME SYSTEM (single source of truth)
+   <html data-theme="light"> (default) or <html data-theme="dark">
+   Token names follow the design handoff; legacy names
+   (--text, --border, --panel2, --ring, …) are kept as aliases
+   so older pages restyle automatically.
    ========================================================= */
 
 :root {
-  /* Default (dark) */
-  --bg: #0b0e13;
-  --bg2: #070a0f;
-  --panel: rgba(255, 255, 255, 0.06);
-  --panel2: rgba(255, 255, 255, 0.09);
-  --text: rgba(255, 255, 255, 0.92);
-  --muted: rgba(255, 255, 255, 0.72);
-  --muted2: rgba(255, 255, 255, 0.58);
-  --border: rgba(255, 255, 255, 0.14);
+  /* Default (light) */
+  --bg: #faf8f4;
+  --surface: #ffffff;
+  --ink: #2b3a2e;
+  --ink2: #46524a;
+  --muted: #67716a;
+  --muted2: #7c8a72;
+  --line: #e7e2d8;
+  --line2: #ebe6da;
+  --line3: #d9d3c6;
+  --primary: #3f5c43;
+  --primary-hover: #344c38;
+  --on-primary: #faf8f4;
+  --sage-tint: #eef1e7;
+  --clay-tint: #f3ece1;
+  --clay: #b0763f;
+  --panel: #f2efe7;
+  --panel-line: #e2ddce;
+  --header-bg: rgba(250, 248, 244, 0.82);
+  --eyebrow: #8a7a5e;
+  --pill-bg: #eef1e7;
+  --pill-text: #4a6350;
+  --img-bg: #e8ede4;
+  --img-label: #7c8a72;
+  --ai-grad: linear-gradient(150deg, #eef1e7, #f6f3ea);
+  --band-bg: #2b3a2e;
+  --band-text: #f3f0e8;
+  --band-muted: #c6cabc;
+  --band-line: rgba(255, 255, 255, 0.1);
+  --field: #ffffff;
+  --field-line: #d9d3c6;
+  --danger: #b3423a;
 
-  --ring: rgba(255, 255, 255, 0.55);
+  /* Legacy aliases (keep older pages on-theme) */
+  --text: var(--ink);
+  --border: var(--line2);
+  --panel2: var(--sage-tint);
+  --bg2: var(--panel);
+  --ring: color-mix(in srgb, var(--primary) 35%, transparent);
+  --primary2: var(--primary);
+  --warn: var(--clay);
+  --brand: var(--primary);
+  --ok: var(--primary);
 
-  /* Accent system (accessible) */
-  --primary: #22c55e; /* green */
-  --primary2: #06b6d4; /* cyan */
-  --warn: #f59e0b; /* amber */
-  --danger: #ef4444; /* red */
-
-  /* Background image control */
-  --bg-image: none; /* set per theme below */
-  --bg-overlay: linear-gradient(
-    180deg,
-    rgba(11, 14, 19, 0.88),
-    rgba(11, 14, 19, 0.92)
-  );
+  /* Background image control (flat theme color by default) */
+  --bg-image: none;
+  --bg-overlay: none;
 }
-
-/* Light theme variables */
-html[data-theme="light"] {
-  --bg: #f7f8fb;
-  --bg2: #eef1f7;
-  --panel: rgba(10, 12, 18, 0.06);
-  --panel2: rgba(10, 12, 18, 0.08);
-  --text: rgba(9, 12, 18, 0.92);
-  --muted: rgba(9, 12, 18, 0.72);
-  --muted2: rgba(9, 12, 18, 0.58);
-  --border: rgba(10, 12, 18, 0.14);
-
-  --ring: rgba(10, 12, 18, 0.55);
-
-  --primary: #16a34a;
-  --primary2: #0891b2;
-  --warn: #b45309;
-  --danger: #dc2626;
-
-  --bg-overlay: linear-gradient(
-    180deg,
-    rgba(247, 248, 251, 0.78),
-    rgba(247, 248, 251, 0.92)
-  );
-}
-
-/* =========================================================
-   PAGE BACKGROUND (with optional image)
-   Put your images in /public/backgrounds/
-   ========================================================= */
 
 html[data-theme="dark"] {
-  --bg-image: url("/backgrounds/srams-dark.webp");
-}
-
-html[data-theme="light"] {
-  --bg-image: url("/backgrounds/srams-light.webp");
+  --bg: #10140d;
+  --surface: #1a2015;
+  --ink: #eef0e6;
+  --ink2: #cfd4c4;
+  --muted: #9aa38f;
+  --muted2: #8b9580;
+  --line: #2b3323;
+  --line2: #2b3323;
+  --line3: #39432f;
+  --primary: #57795b;
+  --primary-hover: #6a9070;
+  --on-primary: #0d110b;
+  --sage-tint: rgba(127, 160, 127, 0.15);
+  --clay-tint: rgba(200, 135, 94, 0.16);
+  --clay: #c88a5e;
+  --panel: #161b11;
+  --panel-line: #2b3323;
+  --header-bg: rgba(16, 20, 13, 0.85);
+  --eyebrow: #b39b76;
+  --pill-bg: rgba(127, 160, 127, 0.15);
+  --pill-text: #b6c4ab;
+  --img-bg: #1e251a;
+  --img-label: #8b9580;
+  --ai-grad: linear-gradient(150deg, #161b11, #12160e);
+  --band-bg: #0c0f09;
+  --band-text: #eef0e6;
+  --band-muted: #9aa38f;
+  --band-line: rgba(255, 255, 255, 0.08);
+  --field: #141a0f;
+  --field-line: #39432f;
+  --danger: #d47f78;
 }
 
 body {
   background: var(--bg);
-  color: var(--text);
+  color: var(--ink);
   min-height: 100vh;
+  font-family: Figtree, system-ui, sans-serif;
 }
 
-/* Background image layer with overlay to preserve readability */
+h1,
+h2,
+h3,
+.font-display {
+  font-family: "Bricolage Grotesque", sans-serif;
+}
+
+/* Optional background image layer (unused by default: --bg-image none) */
 body::before {
   content: "";
   position: fixed;
@@ -89,20 +118,6 @@ body::before {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-}
-
-/* Subtle vignette for contrast */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background: radial-gradient(
-    1200px 800px at 30% 10%,
-    rgba(6, 182, 212, 0.1),
-    transparent 60%
-  );
-  pointer-events: none;
 }
 
 @media (max-width: 420px) {
@@ -117,9 +132,17 @@ body::after {
    ========================================================= */
 
 .card {
-  border: 1px solid var(--border);
-  background: var(--panel);
-  border-radius: 1.25rem;
+  border: 1px solid var(--line2);
+  background: var(--surface);
+  border-radius: 20px;
+  transition: transform 160ms ease, box-shadow 160ms ease,
+    border-color 160ms ease;
+}
+
+.card--hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 34px -22px rgba(43, 58, 46, 0.5);
+  border-color: var(--line3);
 }
 
 .btn-hero {
@@ -127,73 +150,264 @@ body::after {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  padding: 0.85rem 1.05rem;
+  padding: 0.8rem 1.35rem;
   border-radius: 9999px;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--primary2) 20%, transparent),
-    color-mix(in srgb, var(--warn) 16%, transparent)
-  );
-  border: 1px solid var(--border);
-  color: var(--text);
+  background: var(--primary);
+  border: 1px solid var(--primary);
+  color: var(--on-primary);
   font-weight: 700;
   letter-spacing: 0.01em;
+  box-shadow: 0 6px 16px rgba(63, 92, 67, 0.26);
+  transition: background 140ms ease, transform 140ms ease;
+}
+
+.btn-hero:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+  transform: translateY(-1px);
 }
 
 .btn-hero:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
 }
 
 .btn-ghost {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 0.95rem;
-  border-radius: 0.9rem;
-  border: 1px solid var(--border);
-  background: color-mix(in srgb, var(--panel) 55%, transparent);
-  color: var(--text);
+  gap: 0.5rem;
+  padding: 0.75rem 1.2rem;
+  border-radius: 9999px;
+  border: 1px solid var(--line3);
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 600;
+  transition: border-color 140ms ease;
 }
 
 .btn-ghost:hover {
-  background: color-mix(in srgb, var(--panel2) 70%, transparent);
+  border-color: var(--primary);
 }
 
 .btn-ghost:focus-visible,
-.btn-hero:focus-visible {
+.btn-hero:focus-visible,
+.icon-btn:focus-visible,
+.chip:focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px var(--ring);
+}
+
+/* Icon-only button (theme toggle, burger, month nav) */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  border: 1px solid var(--line3);
+  background: var(--surface);
+  color: var(--ink);
+  transition: border-color 140ms ease;
+}
+
+.icon-btn:hover {
+  border-color: var(--primary);
 }
 
 /* Inputs: large, readable, accessible */
 .input {
   width: 100%;
-  border-radius: 1rem;
-  border: 1px solid var(--border);
-  background: color-mix(in srgb, var(--panel) 70%, transparent);
-  color: var(--text);
-  padding: 0.85rem 0.95rem;
-  font-size: 1rem;
+  border-radius: 13px;
+  border: 1px solid var(--field-line);
+  background: var(--field);
+  color: var(--ink);
+  padding: 0.8rem 0.95rem;
+  font-size: 0.95rem;
   line-height: 1.4;
 }
 
 .input:focus {
   outline: none;
-  box-shadow: 0 0 0 3px var(--ring);
-  border-color: color-mix(in srgb, var(--primary2) 35%, var(--border));
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 28%, transparent);
 }
 
-/* Placeholder fix: never overflow, better contrast */
 .input::placeholder {
   color: var(--muted2);
   opacity: 1;
 }
 
-/* Textareas should not shrink readability */
 textarea.input {
   resize: vertical;
   min-height: 8rem;
+}
+
+/* Segmented chip selector (patient type, time-of-day, time slots) */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 11px 18px;
+  border-radius: 9999px;
+  border: 1px solid var(--line3);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: border-color 140ms ease, background 140ms ease;
+}
+
+.chip:hover {
+  border-color: var(--primary);
+}
+
+.chip--active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--on-primary);
+}
+
+/* Section header eyebrow */
+.eyebrow {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--eyebrow);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Badges */
+.badge-price {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  background: var(--sage-tint);
+  color: var(--pill-text);
+  border: 1px solid var(--line);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.badge-soon {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  background: var(--clay-tint);
+  color: var(--clay);
+  border: 1px solid var(--panel-line);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Status pills + dots (appointments) */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  border: 1px solid var(--line);
+  background: var(--pill-bg);
+  color: var(--pill-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.pill--approved {
+  background: var(--sage-tint);
+  color: var(--primary);
+  border-color: color-mix(in srgb, var(--primary) 30%, var(--line));
+}
+
+.pill--requested {
+  background: var(--clay-tint);
+  color: var(--clay);
+  border-color: color-mix(in srgb, var(--clay) 30%, var(--line));
+}
+
+.pill--rejected,
+.pill--canceled {
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 30%, var(--line));
+}
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--muted2);
+}
+
+.dot--approved {
+  background: var(--primary);
+}
+
+.dot--requested {
+  background: var(--clay);
+}
+
+.dot--rejected,
+.dot--canceled {
+  background: var(--danger);
+}
+
+/* Dark gradient band section (care steps, final CTA) */
+.band {
+  background: var(--band-bg);
+  color: var(--band-text);
+  border-radius: 24px;
+}
+
+.band--gradient {
+  background: linear-gradient(135deg, #3f5c43, #2b3a2e);
+  color: #f3f0e8;
+  border-radius: 24px;
+}
+
+/* Brand logo mark */
+.logo-mark {
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: linear-gradient(150deg, #5a7d5a, #3f5c43);
+  color: #faf8f4;
+}
+
+/* Chat typing indicator */
+@keyframes wbdot {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  30% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+.typing-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--muted);
+  animation: wbdot 1.2s infinite;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
 }
 
 /* =========================================================
@@ -201,7 +415,7 @@ textarea.input {
    ========================================================= */
 
 .text-theme {
-  color: var(--text);
+  color: var(--ink);
 }
 
 .text-muted {
@@ -217,11 +431,11 @@ textarea.input {
 }
 
 .bg-panel2 {
-  background: var(--panel2);
+  background: var(--sage-tint);
 }
 
 .border-theme {
-  border-color: var(--border);
+  border-color: var(--line2);
 }
 
 /* =========================================================
@@ -230,7 +444,7 @@ textarea.input {
 
 .calendar-day {
   height: 4rem;
-  border-radius: 1.25rem;
+  border-radius: 12px;
   border-width: 1px;
   text-align: left;
   padding: 0.6rem 0.75rem;
@@ -253,21 +467,39 @@ textarea.input {
 }
 
 .calendar-day--out {
-  opacity: 0.6;
+  opacity: 0.45;
 }
 
-/* TODAY: glow + slightly brighter border */
+/* TODAY: primary-tinted border glow */
 .day--today {
-  border-color: color-mix(in srgb, var(--primary2) 45%, var(--border));
-  box-shadow:
-    0 0 0 3px color-mix(in srgb, var(--primary2) 25%, transparent),
-    0 12px 24px rgba(0, 0, 0, 0.18);
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--line2));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 22%, transparent);
 }
 
-/* SELECTED: stronger ring + subtle inset */
+/* SELECTED: solid primary */
 .day--selected {
-  border-color: color-mix(in srgb, var(--warn) 50%, var(--border));
-  box-shadow:
-    0 0 0 3px color-mix(in srgb, var(--warn) 22%, transparent),
-    inset 0 0 0 1px color-mix(in srgb, var(--warn) 30%, transparent);
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--on-primary);
+}
+
+/* =========================================================
+   MOTION PREFERENCES
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card--hover:hover,
+  .btn-hero,
+  .btn-hero:hover,
+  .chip,
+  .calendar-day,
+  .calendar-day:hover {
+    transition: none;
+    transform: none;
+  }
+
+  .typing-dot {
+    animation: none;
+  }
 }

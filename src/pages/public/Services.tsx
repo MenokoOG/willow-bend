@@ -2,11 +2,22 @@ import { Link } from "react-router-dom";
 import usePageMeta from "../../seo/usePageMeta";
 import { SERVICES } from "./servicesData";
 
-function Badge({ children }: { children: React.ReactNode }) {
+function CheckIcon() {
   return (
-    <span className="pill" style={{ color: "var(--text)" }}>
-      {children}
-    </span>
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="var(--primary)"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="mt-0.5 shrink-0"
+      aria-hidden
+    >
+      <path d="M5 13l4 4L19 7" />
+    </svg>
   );
 }
 
@@ -14,89 +25,126 @@ export default function Services() {
   usePageMeta({
     title: "Services | Willow Bend Family Clinic",
     description:
-      "Services offered including medication review, DOT exams, house calls, medical marijuana evaluations, advocacy, and upcoming functional medicine.",
+      "Family-practice services with clear pricing: same-day sick visits, physicals, medication review, chronic care, and house calls.",
     canonicalPath: "/services",
   });
 
   return (
-    <section className="p-6 sm:p-10 space-y-8 max-w-6xl mx-auto">
-      <header className="space-y-3">
-        <h1 className="text-3xl sm:text-4xl font-bold" style={{ color: "var(--text)" }}>
-          Services
+    <div className="space-y-12">
+      {/* Page head */}
+      <header className="space-y-4 max-w-2xl">
+        <div className="eyebrow">Our services</div>
+        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight leading-[1.08]">
+          Clear pricing, respectful care, a practical approach
         </h1>
         <p className="text-base sm:text-lg" style={{ color: "var(--muted)" }}>
-          Clear pricing, respectful care, and a practical approach. If you’re not
-          sure what you need, contact the clinic and we’ll point you in the right direction.
+          If you're not sure what you need, contact the clinic — or ask Willow —
+          and we'll point you in the right direction.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-3">
-          <Link to="/request" className="btn-hero inline-flex">
-            Request an Appointment
+        <div className="flex flex-col sm:flex-row gap-3 pt-2">
+          <Link to="/request" className="btn-hero">
+            Request an appointment
           </Link>
-          <Link to="/contact" className="btn-ghost inline-flex">
-            Contact + Map
+          <Link to="/contact" className="btn-ghost">
+            Contact + map
           </Link>
         </div>
       </header>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      {/* Service cards */}
+      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
         {SERVICES.map((s) => (
-          <div key={s.id} className="card p-6 space-y-4">
+          <div
+            key={s.id}
+            className="card card--hover p-6 sm:p-7 flex flex-col gap-4"
+            style={{ borderRadius: 22 }}
+          >
             <div className="flex items-start justify-between gap-3">
-              <div className="space-y-1">
-                <h2 className="text-lg sm:text-xl font-semibold" style={{ color: "var(--text)" }}>
-                  {s.title}
-                </h2>
-                <div className="text-sm" style={{ color: "var(--muted)" }}>
-                  {s.summary}
-                </div>
+              <div
+                className="grid place-items-center"
+                style={{
+                  height: 50,
+                  width: 50,
+                  borderRadius: 14,
+                  background:
+                    s.tint === "sage" ? "var(--sage-tint)" : "var(--clay-tint)",
+                  color: s.tint === "sage" ? "var(--primary)" : "var(--clay)",
+                }}
+                aria-hidden
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 21c-4-2.5-7-5.8-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.2-3 7.5-7 10Z" />
+                </svg>
               </div>
 
               <div className="flex flex-col items-end gap-2">
-                <Badge>{s.price}</Badge>
-                {s.pending && (
-                  <span
-                    className="pill"
-                    style={{
-                      borderColor: "color-mix(in srgb, var(--warn) 40%, var(--border))",
-                    }}
-                  >
-                    Pending
-                  </span>
-                )}
+                <span className="badge-price">{s.price}</span>
+                {s.pending && <span className="badge-soon">Coming soon</span>}
               </div>
             </div>
 
-            <ul className="text-sm space-y-2 list-disc pl-5" style={{ color: "var(--muted)" }}>
+            <div className="space-y-1.5">
+              <h2 className="text-xl font-bold">{s.title}</h2>
+              <p className="text-sm" style={{ color: "var(--muted)" }}>
+                {s.summary}
+              </p>
+            </div>
+
+            <ul className="text-sm space-y-2" style={{ color: "var(--ink2)" }}>
               {s.details.map((d) => (
-                <li key={d}>{d}</li>
+                <li key={d} className="flex gap-2">
+                  <CheckIcon />
+                  <span>{d}</span>
+                </li>
               ))}
             </ul>
 
-            <div className="flex flex-col sm:flex-row gap-3 pt-1">
-              <Link to={s.ctaTo || "/contact"} className="btn-hero inline-flex">
+            <div className="pt-2 mt-auto">
+              <Link
+                to={s.ctaTo || "/contact"}
+                className={s.pending ? "btn-ghost w-full" : "btn-hero w-full"}
+              >
                 {s.ctaLabel || "Contact"}
-              </Link>
-
-              <Link to="/contact" className="btn-ghost inline-flex">
-                Questions? Contact the clinic
               </Link>
             </div>
           </div>
         ))}
       </div>
 
-      <div className="card p-6 text-sm space-y-2" style={{ color: "var(--muted)" }}>
-        <div className="font-semibold" style={{ color: "var(--text)" }}>
-          Important note
+      {/* Insurance + emergencies */}
+      <div className="grid gap-5 md:grid-cols-2">
+        <div
+          className="rounded-3xl p-6 sm:p-8 space-y-3"
+          style={{
+            background: "var(--panel)",
+            border: "1px solid var(--panel-line)",
+          }}
+        >
+          <h2 className="text-xl font-bold">Insurance &amp; payment</h2>
+          <p className="text-sm" style={{ color: "var(--muted)" }}>
+            We accept most major insurance plans for standard visits, and offer
+            simple cash-pay pricing for the services listed above. Questions
+            about coverage? Send us a message and we'll check before you book.
+          </p>
+          <Link
+            to="/contact"
+            className="inline-block text-sm font-semibold"
+            style={{ color: "var(--primary)" }}
+          >
+            Ask about your plan →
+          </Link>
         </div>
-        <p>
-          This site is for general information and appointment requests. It is not intended for emergencies.
-        </p>
-        <p style={{ color: "var(--muted2)" }}>
-          In an emergency, call 911 or go to the nearest emergency department.
-        </p>
+
+        <div className="band--gradient p-6 sm:p-8 space-y-3">
+          <h2 className="text-xl font-bold">A note on emergencies</h2>
+          <p className="text-sm" style={{ color: "#cdd6c6" }}>
+            This site is for general information and appointment requests — it
+            is not intended for emergencies. In an emergency, call 911 or go to
+            the nearest emergency department.
+          </p>
+        </div>
       </div>
-    </section>
+    </div>
   );
 }

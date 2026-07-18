@@ -13,15 +13,15 @@ export default function Unauthorized() {
 
   return (
     <div className="mx-auto max-w-xl">
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-        <h1 className="text-xl font-semibold text-white">Unauthorized</h1>
-        <p className="mt-2 text-sm text-white/70">
+      <div className="card p-6">
+        <h1 className="text-xl font-semibold text-theme">Unauthorized</h1>
+        <p className="mt-2 text-sm text-muted">
           You do not have permission to access this page.
         </p>
 
         {from && (
-          <p className="mt-2 text-sm text-white/60">
-            Requested route: <span className="text-white/80">{from}</span>
+          <p className="mt-2 text-sm text-muted2">
+            Requested route: <span className="text-muted">{from}</span>
           </p>
         )}
 

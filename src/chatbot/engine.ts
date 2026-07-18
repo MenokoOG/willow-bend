@@ -140,7 +140,7 @@ export function respond(text: string, ctx: BotContext): BotAnswer {
   switch (turn.intent) {
     case "greeting":
       return answerCard(
-        `Hi 👋 I’m the ${KB.brand} helper bot.\n\nI can help you navigate scheduling, login, and the portal.`,
+        `Hi, I’m Willow 🌿 the ${KB.brand} care assistant.\n\nI can help you navigate scheduling, login, and the portal.`,
         baseQuickReplies(ctx.role)
       );
 

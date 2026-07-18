@@ -1,11 +1,33 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import usePageMeta from "../../seo/usePageMeta";
 import { respond } from "../../chatbot/engine";
 import type { ChatMessage, ChatRole } from "../../chatbot/types";
-import { clearHistory, loadHistory, loadState, saveHistory, saveState } from "../../chatbot/storage";
+import {
+  clearHistory,
+  loadHistory,
+  loadState,
+  saveHistory,
+  saveState,
+} from "../../chatbot/storage";
 import { useAuth } from "../../auth/AuthContext";
+import {
+  ChatBubble,
+  SparkleIcon,
+  TypingDots,
+  WILLOW_DISCLAIMER,
+  WillowAvatar,
+} from "../../components/WillowBits";
 
 const STATE_SCOPE = "help";
+const TYPING_MS = 700;
+
+const SUGGESTIONS = [
+  { label: "Request an appointment", payload: "request appointment" },
+  { label: "Check my appointment status", payload: "check my appointment status" },
+  { label: "How do I log in?", payload: "login help" },
+  { label: "How do I contact the clinic?", payload: "how do I contact the clinic" },
+];
 
 function uid() {
   return Math.random().toString(16).slice(2) + Date.now().toString(16);
@@ -19,8 +41,8 @@ function deriveRole(args: { userEmail?: string; role?: string | null }): ChatRol
 
 export default function HelpBot() {
   usePageMeta({
-    title: "Help Chat • Willow Bend Family Clinic",
-    description: "Offline help chatbot for patients and staff.",
+    title: "Willow • Willow Bend Family Clinic",
+    description: "Willow, the clinic care assistant, for patients and staff.",
     canonicalPath: "/help",
   });
 
@@ -31,35 +53,16 @@ export default function HelpBot() {
     [user?.email, role]
   );
 
-  // ✅ shared history
+  // ✅ shared history (with the floating widget)
   const [messages, setMessages] = useState<ChatMessage[]>(() => loadHistory());
-  // ✅ separate state from widget
+  // ✅ separate flow state from widget
   const [state, setState] = useState<string | undefined>(() => loadState(STATE_SCOPE));
   const [text, setText] = useState("");
+  const [typing, setTyping] = useState(false);
 
   const listRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
-
-  useEffect(() => {
-    if (messages.length > 0) return;
-
-    const seed: ChatMessage[] = [
-      {
-        id: uid(),
-        sender: "bot",
-        ts: Date.now(),
-        text: "Hi 👋 I’m the offline help bot.\n\nI can help you navigate scheduling, portal login, and admin tools (staff).",
-        quickReplies: [
-          { id: "qr_help", label: "What can you do?", payload: "help" },
-          { id: "qr_request", label: "Request appointment", payload: "request appointment" },
-          { id: "qr_status", label: "Check status", payload: "check my appointment status" },
-        ],
-      },
-    ];
-
-    setMessages(seed);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const typingTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     saveHistory(messages);
@@ -73,7 +76,13 @@ export default function HelpBot() {
     const el = listRef.current;
     if (!el) return;
     el.scrollTop = el.scrollHeight;
-  }, [messages]);
+  }, [messages, typing]);
+
+  useEffect(() => {
+    return () => {
+      if (typingTimer.current) clearTimeout(typingTimer.current);
+    };
+  }, []);
 
   function pushMessage(m: ChatMessage) {
     setMessages((prev) => [...prev, m].slice(-200));
@@ -81,7 +90,7 @@ export default function HelpBot() {
 
   function onSend(payload?: string) {
     const raw = (payload ?? text).trim();
-    if (!raw) return;
+    if (!raw || typing) return;
 
     pushMessage({ id: uid(), sender: "user", ts: Date.now(), text: raw });
     setText("");
@@ -95,34 +104,27 @@ export default function HelpBot() {
 
     if (ans.nextState !== undefined) setState(ans.nextState);
 
-    pushMessage({
-      id: uid(),
-      sender: "bot",
-      ts: Date.now(),
-      text: ans.text,
-      quickReplies: ans.quickReplies ?? [],
-    });
-  }
-
-  function onClear() {
-    clearHistory();
-    saveState(undefined, STATE_SCOPE);
-    setState(undefined);
-
-    setMessages([
-      {
+    // Presentation-only typing delay before showing the engine's reply
+    setTyping(true);
+    typingTimer.current = setTimeout(() => {
+      setTyping(false);
+      pushMessage({
         id: uid(),
         sender: "bot",
         ts: Date.now(),
-        text: "Chat cleared ✅ How can I help?",
-        quickReplies: [
-          { id: "qr_help", label: "What can you do?", payload: "help" },
-          { id: "qr_request", label: "Request appointment", payload: "request appointment" },
-          { id: "qr_status", label: "Check status", payload: "check my appointment status" },
-        ],
-      },
-    ]);
+        text: ans.text,
+        quickReplies: ans.quickReplies ?? [],
+      });
+    }, TYPING_MS);
+  }
 
+  function onNewChat() {
+    if (typingTimer.current) clearTimeout(typingTimer.current);
+    setTyping(false);
+    clearHistory();
+    saveState(undefined, STATE_SCOPE);
+    setState(undefined);
+    setMessages([]);
     setTimeout(() => inputRef.current?.focus(), 0);
   }
 
@@ -131,87 +133,159 @@ export default function HelpBot() {
     return lastBot?.quickReplies ?? [];
   }, [messages]);
 
+  const isEmpty = messages.length === 0;
+
   return (
-    <section className="max-w-4xl mx-auto space-y-6">
-      <header className="space-y-2">
-        <h1 className="text-3xl font-semibold">Help Chat</h1>
-        <p className="text-[1.05rem]" style={{ color: "var(--muted)" }}>
-          Offline help assistant (no external APIs). Role: <strong>{chatRole}</strong>
-        </p>
+    <div className="grid gap-8 lg:grid-cols-[240px_1fr] lg:items-start">
+      {/* ============ CONVERSATION RAIL ============ */}
+      <aside className="hidden lg:flex flex-col gap-3 sticky top-24">
+        <button type="button" className="btn-hero w-full" onClick={onNewChat}>
+          <SparkleIcon size={14} />
+          New chat
+        </button>
 
-        <div className="flex flex-wrap gap-2">
-          <button className="btn-ghost" type="button" onClick={onClear}>
-            Clear Chat
-          </button>
-          <button className="btn-ghost" type="button" onClick={() => onSend("help")}>
-            What can you do?
-          </button>
-          <button className="btn-ghost" type="button" onClick={() => onSend("request appointment")}>
-            Request Appointment
-          </button>
-          <button className="btn-ghost" type="button" onClick={() => onSend("check my appointment status")}>
-            Check Status
-          </button>
+        <div
+          className="rounded-2xl p-4 text-sm space-y-2"
+          style={{
+            background: "var(--panel)",
+            border: "1px solid var(--panel-line)",
+            color: "var(--muted)",
+          }}
+        >
+          <div className="font-semibold" style={{ color: "var(--ink)" }}>
+            About Willow
+          </div>
+          <p>
+            Willow helps with scheduling, portal navigation, and common clinic
+            questions. Chats are stored only in your browser.
+          </p>
         </div>
-      </header>
 
-      <div className="card p-5 sm:p-6">
-        <div ref={listRef} className="space-y-3 max-h-[55vh] overflow-auto pr-1" aria-live="polite">
-          {messages.map((m) => (
-            <div
-              key={m.id}
-              className={[
-                "rounded-2xl border px-4 py-3 text-sm whitespace-pre-wrap",
-                m.sender === "user" ? "ml-10" : "mr-10",
-              ].join(" ")}
-              style={{
-                borderColor: "var(--border)",
-                background: m.sender === "user" ? "var(--panel2)" : "var(--panel)",
-                color: "var(--text)",
-              }}
-            >
-              <div className="text-xs mb-1" style={{ color: "var(--muted)" }}>
-                {m.sender === "user" ? "You" : "Bot"}
+        <Link
+          to={chatRole === "patient" ? "/patient" : "/"}
+          className="text-sm font-semibold px-1"
+          style={{ color: "var(--primary)" }}
+        >
+          ← Back to {chatRole === "patient" ? "portal" : "home"}
+        </Link>
+      </aside>
+
+      {/* ============ CHAT COLUMN ============ */}
+      <section
+        className="card flex flex-col overflow-hidden"
+        style={{ minHeight: "calc(100vh - 220px)" }}
+      >
+        {/* Header */}
+        <div
+          className="flex items-center justify-between gap-3 px-5 py-4"
+          style={{ borderBottom: "1px solid var(--line2)" }}
+        >
+          <div className="flex items-center gap-3">
+            <WillowAvatar size={36} />
+            <div>
+              <div className="font-display text-sm font-bold">Willow</div>
+              <div className="text-xs" style={{ color: "#6a9070" }}>
+                ● Online — care assistant
               </div>
-              {m.text}
             </div>
-          ))}
+          </div>
+          <button
+            type="button"
+            className="btn-ghost text-sm !px-4 !py-2 lg:hidden"
+            onClick={onNewChat}
+          >
+            New chat
+          </button>
         </div>
 
-        {quickReplies.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {quickReplies.slice(0, 10).map((q) => (
-              <button key={q.id} type="button" className="btn-ghost text-sm" onClick={() => onSend(q.payload)}>
+        {/* Messages / empty state */}
+        <div
+          ref={listRef}
+          className="flex-1 overflow-auto px-5 py-6 space-y-4"
+          aria-live="polite"
+        >
+          {isEmpty ? (
+            <div className="h-full grid place-items-center">
+              <div className="text-center space-y-4 max-w-md mx-auto py-10">
+                <div className="flex justify-center">
+                  <WillowAvatar size={60} />
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-bold">
+                  Hi, I'm Willow 🌿
+                </h1>
+                <p className="text-sm" style={{ color: "var(--muted)" }}>
+                  I can help you request appointments, find your way around the
+                  patient portal, and answer common clinic questions.
+                </p>
+                <div className="grid sm:grid-cols-2 gap-2 pt-2">
+                  {SUGGESTIONS.map((s) => (
+                    <button
+                      key={s.payload}
+                      type="button"
+                      className="chip !rounded-2xl w-full"
+                      onClick={() => onSend(s.payload)}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              {messages.map((m) => (
+                <ChatBubble key={m.id} message={m} />
+              ))}
+              {typing && <TypingDots />}
+            </>
+          )}
+        </div>
+
+        {/* Quick replies */}
+        {!isEmpty && !typing && quickReplies.length > 0 && (
+          <div className="px-5 pb-3 flex flex-wrap gap-2">
+            {quickReplies.slice(0, 6).map((q) => (
+              <button
+                key={q.id}
+                type="button"
+                className="chip text-sm"
+                onClick={() => onSend(q.payload)}
+              >
                 {q.label}
               </button>
             ))}
           </div>
         )}
 
-        <form
-          className="mt-5 flex gap-2"
-          onSubmit={(e) => {
-            e.preventDefault();
-            onSend();
-          }}
+        {/* Composer */}
+        <div
+          className="px-5 py-4 space-y-2"
+          style={{ borderTop: "1px solid var(--line2)" }}
         >
-          <input
-            ref={inputRef}
-            className="input flex-1"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="Type a question…"
-            aria-label="Chat input"
-          />
-          <button type="submit" className="btn-hero px-5">
-            Send
-          </button>
-        </form>
-
-        <div className="mt-3 text-xs" style={{ color: "var(--muted)" }}>
-          This bot is for navigation + scheduling help only. No medical advice.
+          <form
+            className="flex gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              onSend();
+            }}
+          >
+            <input
+              ref={inputRef}
+              className="input flex-1 !rounded-2xl"
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Ask Willow anything…"
+              aria-label="Chat input"
+            />
+            <button type="submit" className="btn-hero !px-5" disabled={typing}>
+              Send
+            </button>
+          </form>
+          <p className="text-xs text-center" style={{ color: "var(--muted2)" }}>
+            {WILLOW_DISCLAIMER}
+          </p>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 }

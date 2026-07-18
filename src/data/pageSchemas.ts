@@ -2,9 +2,10 @@ export type PageSchema = Record<string, string>;
 
 export const pageSchemas: Record<string, PageSchema> = {
   home: {
-    heroTitle: "Care that treats you like a human",
-    heroSubtitle: "Primary care rooted in respect, experience, and compassion.",
-    ctaText: "Request an appointment",
+    heroTitle: "Care that feels like family.",
+    heroSubtitle:
+      "Unhurried, whole-person primary care for every stage of life — right here in your neighborhood. Same-week appointments and a team that actually knows your name.",
+    ctaText: "Book a visit",
   },
   services: {
     title: "Services",

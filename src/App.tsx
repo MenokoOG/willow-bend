@@ -17,6 +17,7 @@ const Signup = lazy(() => import("./pages/auth/Signup"));
 const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
 const AdminContentEditor = lazy(() => import("./pages/admin/AdminContentEditor"));
 const AdminAppointments = lazy(() => import("./pages/admin/AdminAppointments"));
+const AdminMessages = lazy(() => import("./pages/admin/AdminMessages"));
 
 const PatientDashboard = lazy(() => import("./pages/patient/PatientDashboard"));
 const PatientCalendar = lazy(() => import("./pages/patient/PatientCalendar"));
@@ -25,7 +26,7 @@ const HelpBot = lazy(() => import("./pages/shared/HelpBot"));
 
 export default function App() {
   return (
-    <Suspense fallback={<div className="py-16 text-center text-white/70">Loading…</div>}>
+    <Suspense fallback={<div className="py-16 text-center text-muted">Loading…</div>}>
       <Routes>
         <Route element={<SiteLayout />}>
           {/* Public */}
@@ -87,6 +88,16 @@ export default function App() {
               <RequireAuth>
                 <RequireRole role="admin">
                   <AdminAppointments />
+                </RequireRole>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/admin/messages"
+            element={
+              <RequireAuth>
+                <RequireRole role="admin">
+                  <AdminMessages />
                 </RequireRole>
               </RequireAuth>
             }

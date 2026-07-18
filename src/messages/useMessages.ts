@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   getDocs,
   query,
   where,
@@ -53,4 +54,44 @@ export function useSendMessage() {
   };
 
   return { send };
+}
+
+/** Admin: full message management (list all, edit, delete). */
+export function useAdminMessages() {
+  const fetchAll = async () => {
+    const snap = await getDocs(collection(db, "messages"));
+    const rows = snap.docs.map((d) => ({
+      id: d.id,
+      ...d.data(),
+    })) as PortalMessage[];
+    rows.sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
+    return rows;
+  };
+
+  const { value, loading, execute } = useAsync(fetchAll, []);
+
+  const updateMessage = async (
+    id: string,
+    patch: Pick<PortalMessage, "subject" | "body">
+  ) => {
+    await updateDoc(doc(db, "messages", id), {
+      subject: patch.subject,
+      body: patch.body,
+      editedAt: Date.now(),
+    });
+    await execute();
+  };
+
+  const deleteMessage = async (id: string) => {
+    await deleteDoc(doc(db, "messages", id));
+    await execute();
+  };
+
+  return {
+    messages: value ?? [],
+    loading,
+    refresh: execute,
+    updateMessage,
+    deleteMessage,
+  };
 }

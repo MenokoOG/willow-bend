@@ -88,6 +88,33 @@ export default function AdminDashboard() {
             Review requests →
           </div>
         </Link>
+
+        <Link
+          to="/admin/messages"
+          className="card p-6 block transition focus:outline-none focus-visible:ring-2"
+          style={{
+            boxShadow: "none",
+            color: "var(--text)",
+            outline: "none",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "var(--panel2)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "var(--panel)";
+          }}
+        >
+          <h2 className="text-xl font-semibold mb-2" style={{ color: "var(--text)" }}>
+            Messages &amp; Archives
+          </h2>
+          <p className="text-sm" style={{ color: "var(--muted)" }}>
+            See, edit, and delete portal messages. Clear old appointment
+            archives.
+          </p>
+          <div className="mt-4 text-sm font-semibold" style={{ color: "var(--primary2)" }}>
+            Manage messages →
+          </div>
+        </Link>
       </div>
     </section>
   );

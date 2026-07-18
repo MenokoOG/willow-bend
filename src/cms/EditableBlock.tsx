@@ -18,7 +18,7 @@ export default function EditableBlock({ value, onSave, isAdmin }: Props) {
       {editing ? (
         <>
           <textarea
-            className="w-full p-2 rounded bg-black/20 border border-white/20"
+            className="input w-full"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
           />

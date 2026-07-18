@@ -26,11 +26,9 @@ function statusPriority(s: AppointmentStatus): number {
 }
 
 function dotStyleFor(status: AppointmentStatus) {
-  // Use theme vars if they exist, otherwise reasonable fallbacks.
-  if (status === "approved") return { background: "var(--ok, #34d399)" };
-  if (status === "requested") return { background: "var(--warn, #fbbf24)" };
-  if (status === "rejected") return { background: "var(--danger, #fb7185)" };
-  return { background: "var(--danger, #fb7185)" }; // canceled
+  if (status === "approved") return { background: "var(--primary)" };
+  if (status === "requested") return { background: "var(--clay)" };
+  return { background: "var(--danger)" }; // rejected / canceled
 }
 
 function pillClassFor(status: AppointmentStatus) {
@@ -113,31 +111,64 @@ export default function PatientCalendar() {
 
   return (
     <div className="space-y-5">
-      {/* Header card */}
-      <div className="card p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-lg font-semibold" style={{ color: "var(--text)" }}>
-            Calendar
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+            My calendar
           </h1>
-          <p className="text-sm" style={{ color: "var(--muted)" }}>
-            {label}
-          </p>
-          <p className="text-xs mt-1" style={{ color: "var(--muted2)" }}>
+          <p className="text-sm mt-1" style={{ color: "var(--muted)" }}>
             Live sync: status updates appear automatically.
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-2">
+        <div className="flex items-center gap-2">
           <button
-            className="btn-ghost px-3 py-2 text-sm"
+            className="icon-btn"
             onClick={() => setCursor((c) => addMonths(c, -1))}
             type="button"
+            aria-label="Previous month"
           >
-            Prev
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              aria-hidden
+            >
+              <path d="M15 6l-6 6 6 6" />
+            </svg>
+          </button>
+
+          <span className="font-display text-lg font-bold min-w-[10rem] text-center">
+            {label}
+          </span>
+
+          <button
+            className="icon-btn"
+            onClick={() => setCursor((c) => addMonths(c, 1))}
+            type="button"
+            aria-label="Next month"
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              aria-hidden
+            >
+              <path d="M9 6l6 6-6 6" />
+            </svg>
           </button>
 
           <button
-            className="btn-ghost px-3 py-2 text-sm"
+            className="btn-ghost text-sm !px-4 !py-2"
             onClick={() => {
               const now = new Date();
               setCursor(now);
@@ -146,14 +177,6 @@ export default function PatientCalendar() {
             type="button"
           >
             Today
-          </button>
-
-          <button
-            className="btn-ghost px-3 py-2 text-sm"
-            onClick={() => setCursor((c) => addMonths(c, 1))}
-            type="button"
-          >
-            Next
           </button>
         </div>
       </div>
@@ -191,17 +214,13 @@ export default function PatientCalendar() {
                     .slice()
                     .sort((a, b) => statusPriority(b.status) - statusPriority(a.status))[0].status;
 
-            const ringStyle: React.CSSProperties = isToday
-              ? {
-                  boxShadow:
-                    "0 0 0 2px color-mix(in srgb, var(--brand, #22c55e) 65%, transparent), 0 0 18px color-mix(in srgb, var(--brand, #22c55e) 35%, transparent)",
-                }
-              : isSelected
-              ? {
-                  boxShadow:
-                    "0 0 0 2px color-mix(in srgb, var(--text) 35%, transparent)",
-                }
-              : { boxShadow: "none" };
+            const ringStyle: React.CSSProperties =
+              isToday && !isSelected
+                ? {
+                    boxShadow:
+                      "0 0 0 2px color-mix(in srgb, var(--primary) 45%, transparent)",
+                  }
+                : { boxShadow: "none" };
 
             return (
               <button
@@ -211,14 +230,20 @@ export default function PatientCalendar() {
                 className={[
                   "h-14 sm:h-16 rounded-xl border text-left px-2 py-1 transition focus:outline-none",
                   "focus-visible:ring-2 focus-visible:ring-offset-0",
-                  inMonth ? "hover:opacity-95" : "opacity-60",
+                  inMonth ? "hover:-translate-y-px" : "opacity-45",
                 ].join(" ")}
                 style={{
-                  borderColor: isSelected
-                    ? "color-mix(in srgb, var(--text) 28%, var(--border))"
-                    : "var(--border)",
-                  background: "var(--panel)",
-                  color: inMonth ? "var(--text)" : "var(--muted2)",
+                  borderColor: isSelected ? "var(--primary)" : "var(--line2)",
+                  background: isSelected
+                    ? "var(--primary)"
+                    : dayAppts.length > 0
+                    ? "var(--sage-tint)"
+                    : "var(--surface)",
+                  color: isSelected
+                    ? "var(--on-primary)"
+                    : inMonth
+                    ? "var(--ink)"
+                    : "var(--muted2)",
                   ...ringStyle,
                 }}
                 aria-label={`Calendar day ${date.toDateString()}${
@@ -247,13 +272,23 @@ export default function PatientCalendar() {
                 </div>
 
                 {dayAppts.length > 0 && (
-                  <div className="mt-1 text-[11px]" style={{ color: "var(--muted)" }}>
+                  <div
+                    className="mt-1 text-[11px]"
+                    style={{
+                      color: isSelected ? "var(--on-primary)" : "var(--muted)",
+                    }}
+                  >
                     {dayAppts.length} appt{dayAppts.length === 1 ? "" : "s"}
                   </div>
                 )}
 
                 {isToday && (
-                  <div className="mt-1 text-[11px] font-semibold" style={{ color: "var(--brand)" }}>
+                  <div
+                    className="mt-1 text-[11px] font-semibold"
+                    style={{
+                      color: isSelected ? "var(--on-primary)" : "var(--primary)",
+                    }}
+                  >
                     Today
                   </div>
                 )}
