@@ -9,11 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Replaced the `testadmin@example.com` placeholder in the admin allowlists
-  (`src/auth/admin.ts`, `src/auth/adminEmails.ts`) with the real admin
-  account emails. Note: Firestore security rules must list the same
-  emails in `isAdminEmail()` for admin access to actually work
-  server-side.
+- Admin allowlist now reads from the `VITE_ADMIN_EMAILS` env var
+  (comma-separated) instead of hardcoded emails in the source, keeping
+  real addresses out of the repo. Removed the unused duplicate allowlist
+  `src/auth/admin.ts`. Note: the env var gates the UI only — Firestore
+  security rules must list the same emails in `isAdminEmail()` for admin
+  access to actually work server-side, and the var must also be set in
+  Netlify's build environment.
 
 ### Fixed
 
