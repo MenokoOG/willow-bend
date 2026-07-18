@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `LICENSE` file: proprietary, all-rights-reserved terms — the code is
+  public for portfolio review only and may not be copied or reused without
+  written permission (`package.json` now declares `"license": "UNLICENSED"`).
+- Fictional `testadmin@example.com` test admin account in the admin
+  allowlists for MVP testing (create the matching user in Firebase Auth).
+
 - **Willow AI**: OpenAI-backed replies via a Netlify Function
   (`/api/willow`) with the key kept server-side. Emergency inputs
   short-circuit to an instant offline 911 answer, and any AI failure
