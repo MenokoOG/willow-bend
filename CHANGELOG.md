@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Untracked `.claude/settings.local.json` and added it to `.gitignore` —
+  it is a per-machine Claude Code settings file that changes constantly
+  and was causing merge conflicts on every pull.
 - Netlify build failure after Dependabot bumped Tailwind CSS to v4: pinned
   `tailwindcss` back to `^3.4.17`, since the project uses the v3 PostCSS
   plugin setup (`postcss.config`, `tailwind.config.ts`, `@tailwind`
