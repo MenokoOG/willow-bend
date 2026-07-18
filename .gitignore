@@ -68,3 +68,8 @@ Thumbs.db
 
 # Claude Code local (per-machine) settings
 .claude/settings.local.json
+
+# Real Firestore rules contain the admin emails — deploy from here
+# with `firebase deploy --only firestore:rules`. The committed
+# firestore.rules.example is the version-controlled template.
+firestore.rules

@@ -1,0 +1,157 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ----------------------------
+    // Helpers
+    // ----------------------------
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function userEmail() {
+      return signedIn() ? request.auth.token.email : "";
+    }
+
+    // Admin allowlist. Must stay in sync with VITE_ADMIN_EMAILS
+    // (the client env var only gates the UI — this is the real check).
+    // email_verified prevents someone registering an unverified
+    // email/password account with an admin's address to gain access.
+    function isAdminEmail() {
+      return signedIn()
+        && request.auth.token.email_verified == true
+        && userEmail() in ["admin1@example.com", "admin2@example.com"];
+    }
+
+    function isOwnerEmail(fieldName) {
+      // fieldName is expected to be "patientEmail" or "toEmail"
+      return signedIn()
+        && resource.data[fieldName] is string
+        && userEmail() == resource.data[fieldName];
+    }
+
+    function newOwnerEmail(fieldName) {
+      return signedIn()
+        && request.resource.data[fieldName] is string
+        && userEmail() == request.resource.data[fieldName];
+    }
+
+    // Minimal schema guards to reduce junk/spam
+    function hasString(fieldName) {
+      return request.resource.data[fieldName] is string
+        && request.resource.data[fieldName].size() > 0;
+    }
+
+    function hasOptionalString(fieldName) {
+      return !(fieldName in request.resource.data) || request.resource.data[fieldName] is string;
+    }
+
+    // ----------------------------
+    // CONTENT
+    // ----------------------------
+    match /content/{document=**} {
+      allow read: if true;
+      allow write: if isAdminEmail();
+    }
+
+    // ----------------------------
+    // APPOINTMENTS (active)
+    // ----------------------------
+    match /appointments/{id} {
+
+      // Anyone can create an appointment request, BUT:
+      // - If signed in, the patientEmail must match their auth email (prevents spoofing)
+      // - If not signed in, we still allow create (prototype), but require a patientEmail string
+      // - status must start as "requested" — approval is admin-only
+      //   (see update rule below; appointments stay human-approved)
+      allow create: if (
+        hasString("patientEmail")
+        && hasOptionalString("patientName")
+        && hasOptionalString("date")
+        && hasOptionalString("time")
+        && request.resource.data.status == "requested"
+        && (
+          !signedIn() || newOwnerEmail("patientEmail")
+        )
+      );
+
+      // Admin can read/update/delete everything
+      allow read, update, delete: if isAdminEmail();
+
+      // Patient can read ONLY their own — by patientEmail, or by
+      // patientUid (the portal's live subscription queries on both)
+      allow read: if isOwnerEmail("patientEmail");
+      allow read: if signedIn()
+        && resource.data.patientUid == request.auth.uid;
+
+      // Patient can update ONLY their own, and may NOT touch:
+      // - status: appointment approval always stays human/admin-approved
+      // - patientEmail: prevents reassigning the appointment to someone else
+      allow update: if isOwnerEmail("patientEmail")
+        && !request.resource.data.diff(resource.data)
+             .changedKeys().hasAny(["status", "patientEmail"]);
+
+      // Patient can delete (cancel) ONLY their own
+      allow delete: if isOwnerEmail("patientEmail");
+    }
+
+    // ----------------------------
+    // APPOINTMENTS ARCHIVE
+    // - admin: full access
+    // - patient: may create ONLY the archive copy of their own
+    //   appointment (the app archives on cancel via a transaction —
+    //   without this, patient cancellation fails entirely)
+    // ----------------------------
+    match /appointments_archive/{id} {
+      allow read, update, delete: if isAdminEmail();
+      allow create: if isAdminEmail()
+        || (
+          newOwnerEmail("patientEmail")
+          && request.resource.data.archivedBy.role == "patient"
+        );
+    }
+
+    // ----------------------------
+    // MESSAGES
+    // - admin writes
+    // - patient reads their own by toEmail
+    // - patient can mark read (readAt only)
+    // ----------------------------
+    match /messages/{id} {
+
+      // Admin-only create, with basic field requirements
+      allow create: if isAdminEmail()
+        && hasString("toEmail")
+        && hasString("subject")
+        && hasString("body")
+        && hasOptionalString("appointmentId");
+
+      // Admin can read all
+      // Patient can read only if message is addressed to them
+      allow read: if isAdminEmail()
+        || (signedIn()
+          && resource.data.toEmail is string
+          && userEmail() == resource.data.toEmail
+        );
+
+      // Patient can ONLY update readAt (mark read)
+      allow update: if signedIn()
+        && resource.data.toEmail is string
+        && userEmail() == resource.data.toEmail
+        && request.resource.data.diff(resource.data).changedKeys().hasOnly(["readAt"])
+        && (request.resource.data.readAt is int || request.resource.data.readAt is timestamp);
+
+      allow delete: if isAdminEmail();
+    }
+
+    // ----------------------------
+    // USERS
+    // ----------------------------
+    match /users/{uid} {
+      allow create: if signedIn() && request.auth.uid == uid;
+      allow read: if signedIn() && (request.auth.uid == uid || isAdminEmail());
+      allow update: if signedIn() && (request.auth.uid == uid || isAdminEmail());
+      allow delete: if isAdminEmail();
+    }
+  }
+}

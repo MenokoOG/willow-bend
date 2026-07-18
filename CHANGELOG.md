@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Firestore security rules are now version-controlled:
+  `firestore.rules.example` (placeholder admin emails) is committed, the
+  real `firestore.rules` is gitignored and deployed with
+  `firebase deploy --only firestore:rules` (`firebase.json` /
+  `.firebaserc` added). The rules include fixes over the
+  previously console-only version:
+  - patients can no longer change `status` (or `patientEmail`) on their
+    own appointments — approval stays admin-only, per project policy;
+    `status` must be `"requested"` on create;
+  - admin checks require a verified email (`email_verified`), so an
+    unverified email/password signup with an admin's address can't
+    gain access;
+  - patients can read their appointments by `patientUid` (the portal's
+    live subscription queries on it — previously that query was always
+    permission-denied);
+  - patients can create the archive copy of their own appointment on
+    cancel (the app archives via a transaction — previously admin-only,
+    which broke patient cancellation entirely).
+- `.gitattributes` normalizing all text files to LF — stops the
+  CRLF/LF whole-file diff churn from mixed Windows/WSL git usage
+  (renormalized `LICENSE`, `CHANGELOG.md`, `package.json`,
+  `package-lock.json`).
+
 ### Changed
 
 - Admin allowlist now reads from the `VITE_ADMIN_EMAILS` env var
@@ -19,6 +44,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- `useAppointments`: the post-write refresh (`request`,
+  `archiveAndDelete`) re-fetches the full appointments list, which
+  Firestore rules only permit for admins — a patient's successful
+  request/cancel surfaced as an error. The refresh is now best-effort
+  and no longer fails the write.
 - Untracked `.claude/settings.local.json` and added it to `.gitignore` —
   it is a per-machine Claude Code settings file that changes constantly
   and was causing merge conflicts on every pull.
