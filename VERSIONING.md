@@ -4,7 +4,7 @@
 **Last updated:** 2026-05-07
 **Applies to:** every classHuman repo (Ag3nt24, HADES, Harness, Alfheim, classHuman-pm, Ag3nt24 SDK, future products)
 
-This file is the canonical version policy. Drop a copy into every classHuman repo root. When the policy changes, edit the canonical at `~/development/claude-mds/standards/VERSIONING.md` first, then propagate.
+This file is the canonical version policy. Drop a copy into every classHuman repo root. When the policy changes, edit the canonical at `F:\classHuman\menoko-og-prompt-md-library\rune-library\references\``versioning.md` first, then propagate.
 
 ---
 
