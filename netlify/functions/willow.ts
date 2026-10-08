@@ -1,4 +1,5 @@
 import { KB } from "../../src/chatbot/kb";
+import { report, type Outcome } from "../lib/heimdall";
 
 /** Willow AI — Netlify Function (v2).
  *  Keeps OPENAI_API_KEY server-side. The client falls back to the offline
@@ -63,9 +64,22 @@ export default async function handler(req: Request): Promise<Response> {
     return json(405, { error: "method_not_allowed" });
   }
 
+  const startedAt = Date.now();
+  // Report once, then respond. Malformed requests (4xx) are not agent traffic
+  // and are not reported. Counts only: see netlify/lib/heimdall.ts.
+  const done = async (res: Response, outcome: Outcome): Promise<Response> => {
+    await report(outcome, startedAt);
+    return res;
+  };
+
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    return json(501, { error: "ai_unconfigured" });
+    // Intentional keyless deployment: the client runs its offline engine.
+    return done(json(501, { error: "ai_unconfigured" }), {
+      mode: "offline",
+      degraded: false,
+      error: "none",
+    });
   }
 
   let body: { messages?: unknown; chatRole?: unknown };
@@ -122,17 +136,33 @@ export default async function handler(req: Request): Promise<Response> {
     });
 
     if (!upstream.ok) {
-      return json(502, { error: "upstream_error", status: upstream.status });
+      return done(json(502, { error: "upstream_error", status: upstream.status }), {
+        mode: "offline",
+        degraded: true,
+        error: "upstream",
+      });
     }
 
     const data = await upstream.json();
     const text: string | undefined = data?.choices?.[0]?.message?.content;
     if (!text || !text.trim()) {
-      return json(502, { error: "empty_completion" });
+      return done(json(502, { error: "empty_completion" }), {
+        mode: "offline",
+        degraded: true,
+        error: "upstream",
+      });
     }
 
-    return json(200, { text: text.trim() });
+    return done(json(200, { text: text.trim() }), {
+      mode: "live",
+      degraded: false,
+      error: "none",
+    });
   } catch {
-    return json(502, { error: "upstream_unreachable" });
+    return done(json(502, { error: "upstream_unreachable" }), {
+      mode: "offline",
+      degraded: true,
+      error: "upstream",
+    });
   }
 }

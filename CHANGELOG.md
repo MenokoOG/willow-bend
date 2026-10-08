@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Willow reports to Heimdall**: `netlify/lib/heimdall.ts` sends one
+  counts-only event per chat request (mode, degraded, latency band, error
+  class) to the Heimdall sink. Visitor text is never sent; the sink rejects
+  unknown fields. Off unless `HEIMDALL_URL` and `HEIMDALL_KEY` are set in
+  Netlify. Waits at most 800ms, never throws. Sink:
+  github.com/MenokoOG/heimdall.
 - Firestore security rules are now version-controlled:
   `firestore.rules.example` (placeholder admin emails) is committed, the
   real `firestore.rules` is gitignored and deployed with
