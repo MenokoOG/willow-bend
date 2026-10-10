@@ -12,7 +12,7 @@ A small local clinic needs what large health systems get from expensive platform
 
 This started as a real client build, then was rebranded and fully sanitized into the fictional **Willow Bend Family Clinic** (Meridian, ID) so it can be shown publicly. On top of that base:
 
-- **Design system:** implemented a full design handoff — sage/cream token system with light and dark themes, Bricolage Grotesque + Figtree typography, and rebuilt Home, Services, Request, Patient Portal, and Calendar pages. Token aliases let legacy pages restyle without churn.
+- **Design system:** implemented a full design handoff — Voxel Art token system (sky/orange/green, chunky outlines, hard cube shadows) with light and dark themes, Press Start 2P + Space Grotesk typography, and code-generated isometric voxel artwork in place of stock imagery, and rebuilt Home, Services, Request, Patient Portal, and Calendar pages. Token aliases let legacy pages restyle without churn.
 - **Appointments, human-approved:** patients request a time at `/request`; clinic staff approve, reject, cancel, or archive from the admin portal. Approval is never automated — that's a hard project rule.
 - **Patient portal:** live Firestore sync of appointment status, portal messages from staff, and a month calendar view.
 - **Admin tooling:** appointment management, CMS-style page content editing, and a Messages & Archives page — view/edit/delete sent portal messages and clear old appointment archives with audit flags.

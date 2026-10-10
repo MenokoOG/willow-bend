@@ -10,114 +10,152 @@
    so older pages restyle automatically.
    ========================================================= */
 
+/* Voxel Art palette (see docs/adr/0004). Light = daytime sky, dark = night.
+   `--primary` is a FILL colour (buttons, chips); use `--link` for coloured
+   text on light surfaces so contrast stays WCAG AA. */
 :root {
-  /* Default (light) */
-  --bg: #faf8f4;
+  --bg: #a8e0f0;
   --surface: #ffffff;
-  --ink: #2b3a2e;
-  --ink2: #46524a;
-  --muted: #67716a;
-  --muted2: #7c8a72;
-  --line: #e7e2d8;
-  --line2: #ebe6da;
-  --line3: #d9d3c6;
-  --primary: #3f5c43;
-  --primary-hover: #344c38;
-  --on-primary: #faf8f4;
-  --sage-tint: #eef1e7;
-  --clay-tint: #f3ece1;
-  --clay: #b0763f;
-  --panel: #f2efe7;
-  --panel-line: #e2ddce;
-  --header-bg: rgba(250, 248, 244, 0.82);
-  --eyebrow: #8a7a5e;
-  --pill-bg: #eef1e7;
-  --pill-text: #4a6350;
-  --img-bg: #e8ede4;
-  --img-label: #7c8a72;
-  --ai-grad: linear-gradient(150deg, #eef1e7, #f6f3ea);
-  --band-bg: #2b3a2e;
-  --band-text: #f3f0e8;
-  --band-muted: #c6cabc;
-  --band-line: rgba(255, 255, 255, 0.1);
-  --field: #ffffff;
-  --field-line: #d9d3c6;
-  --danger: #b3423a;
+  --surface-strong: #eef7fb;
+  --ink: #16324a;
+  --ink2: #1f4361;
+  --muted: #3b5a72;
+  --muted2: #3b5a72;
+  --line: #16324a;
+  --line2: #16324a;
+  --line3: #16324a;
+  --primary: #ff6b3d;
+  --primary-hover: #ff8a5c;
+  --on-primary: #16110c;
+  --link: #a8330a;
+  --accent: #2fbf71;
+  --yellow: #ffc93c;
+  --sage-tint: #e3f4fa;
+  --clay-tint: #fff1c7;
+  --clay: #7a4d00;
+  --panel: #eef7fb;
+  --panel-line: #16324a;
+  --header-bg: #ffffff;
+  --eyebrow: #1f4361;
+  --pill-bg: #ffffff;
+  --pill-text: #16324a;
+  --img-bg: #d9f1f9;
+  --img-label: #3b5a72;
+  --ai-grad: linear-gradient(150deg, #ffffff, #eef7fb);
+  --band-bg: #16324a;
+  --band-text: #ffffff;
+  --band-muted: #c9e3ef;
+  --band-line: rgba(255, 255, 255, 0.25);
+  --field: #eef7fb;
+  --field-line: #16324a;
+  --danger: #b3261e;
+
+  /* Voxel signatures */
+  --shadow-sm: 3px 3px 0 var(--line);
+  --shadow-md: 5px 5px 0 var(--line);
+  --shadow-lg: 8px 8px 0 var(--line);
+  --voxel-top: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0 30%, transparent 30%);
+  --voxel-side: 3px solid var(--line);
+  --ease-standard: steps(4, end);
+  --font-display-pixel: "Press Start 2P", "Space Grotesk", monospace;
 
   /* Legacy aliases (keep older pages on-theme) */
   --text: var(--ink);
   --border: var(--line2);
   --panel2: var(--sage-tint);
   --bg2: var(--panel);
-  --ring: color-mix(in srgb, var(--primary) 35%, transparent);
+  --ring: #ff6b3d;
   --primary2: var(--primary);
   --warn: var(--clay);
   --brand: var(--primary);
-  --ok: var(--primary);
+  --ok: var(--accent);
 
-  /* Background image control (flat theme color by default) */
-  --bg-image: none;
+  /* Faint voxel checker behind the page (set to none to disable) */
+  --bg-image: linear-gradient(rgba(255, 255, 255, 0.16) 50%, transparent 50%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.16) 50%, transparent 50%);
   --bg-overlay: none;
 }
 
 html[data-theme="dark"] {
-  --bg: #10140d;
-  --surface: #1a2015;
-  --ink: #eef0e6;
-  --ink2: #cfd4c4;
-  --muted: #9aa38f;
-  --muted2: #8b9580;
-  --line: #2b3323;
-  --line2: #2b3323;
-  --line3: #39432f;
-  --primary: #57795b;
-  --primary-hover: #6a9070;
-  --on-primary: #0d110b;
-  --sage-tint: rgba(127, 160, 127, 0.15);
-  --clay-tint: rgba(200, 135, 94, 0.16);
-  --clay: #c88a5e;
-  --panel: #161b11;
-  --panel-line: #2b3323;
-  --header-bg: rgba(16, 20, 13, 0.85);
-  --eyebrow: #b39b76;
-  --pill-bg: rgba(127, 160, 127, 0.15);
-  --pill-text: #b6c4ab;
-  --img-bg: #1e251a;
-  --img-label: #8b9580;
-  --ai-grad: linear-gradient(150deg, #161b11, #12160e);
-  --band-bg: #0c0f09;
-  --band-text: #eef0e6;
-  --band-muted: #9aa38f;
-  --band-line: rgba(255, 255, 255, 0.08);
-  --field: #141a0f;
-  --field-line: #39432f;
-  --danger: #d47f78;
+  --bg: #0b1d2c;
+  --surface: #12293d;
+  --surface-strong: #0f2335;
+  --ink: #eef7fb;
+  --ink2: #cfe6f1;
+  --muted: #a9c4d4;
+  --muted2: #a9c4d4;
+  --line: #7fc4dc;
+  --line2: #3f7690;
+  --line3: #7fc4dc;
+  --primary: #ff6b3d;
+  --primary-hover: #ff8a5c;
+  --on-primary: #16110c;
+  --link: #ff9a76;
+  --sage-tint: rgba(168, 224, 240, 0.12);
+  --clay-tint: rgba(255, 201, 60, 0.14);
+  --clay: #ffd466;
+  --panel: #0f2335;
+  --panel-line: #3f7690;
+  --header-bg: #12293d;
+  --eyebrow: #a8e0f0;
+  --pill-bg: #0f2335;
+  --pill-text: #eef7fb;
+  --img-bg: #0f2a3f;
+  --img-label: #a9c4d4;
+  --ai-grad: linear-gradient(150deg, #12293d, #0f2335);
+  --band-bg: #07131d;
+  --band-text: #eef7fb;
+  --band-muted: #a9c4d4;
+  --band-line: rgba(168, 224, 240, 0.25);
+  --field: #0f2335;
+  --field-line: #7fc4dc;
+  --danger: #ff8f87;
+
+  --shadow-sm: 3px 3px 0 #000000;
+  --shadow-md: 5px 5px 0 #000000;
+  --shadow-lg: 8px 8px 0 #000000;
+  --bg-image: linear-gradient(rgba(168, 224, 240, 0.05) 50%, transparent 50%),
+    linear-gradient(90deg, rgba(168, 224, 240, 0.05) 50%, transparent 50%);
 }
 
 body {
   background: var(--bg);
   color: var(--ink);
   min-height: 100vh;
-  font-family: Figtree, system-ui, sans-serif;
+  font-family: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
 }
 
-h1,
 h2,
 h3,
 .font-display {
-  font-family: "Bricolage Grotesque", sans-serif;
+  font-family: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  font-weight: 700;
 }
 
-/* Optional background image layer (unused by default: --bg-image none) */
+/* Page titles use the pixel display face. Its glyphs are very wide, so the
+   size is clamped here (!important beats the Tailwind text-* utilities). */
+h1 {
+  font-family: var(--font-display-pixel);
+  font-weight: 400;
+  font-size: clamp(1.35rem, 4.2vw, 2.35rem) !important;
+  line-height: 1.35 !important;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Voxel checker layer behind the page (--bg-image none disables it) */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -2;
   background-image: var(--bg-overlay), var(--bg-image);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-size: 48px 48px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ring);
+  outline-offset: 3px;
 }
 
 @media (max-width: 420px) {
@@ -128,21 +166,22 @@ body::before {
 }
 
 /* =========================================================
-   GLOBAL UI PRIMITIVES
+   GLOBAL UI PRIMITIVES — Voxel Art: chunky outline + hard offset
+   "cube shadow", zero radius, steps() easing, top-face highlight.
    ========================================================= */
 
 .card {
-  border: 1px solid var(--line2);
+  border: var(--voxel-side);
   background: var(--surface);
-  border-radius: 20px;
-  transition: transform 160ms ease, box-shadow 160ms ease,
-    border-color 160ms ease;
+  border-radius: 0;
+  box-shadow: var(--shadow-md);
+  transition: transform 0.12s var(--ease-standard),
+    box-shadow 0.12s var(--ease-standard);
 }
 
 .card--hover:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 18px 34px -22px rgba(43, 58, 46, 0.5);
-  border-color: var(--line3);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-lg);
 }
 
 .btn-hero {
@@ -151,24 +190,32 @@ body::before {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.8rem 1.35rem;
-  border-radius: 9999px;
-  background: var(--primary);
-  border: 1px solid var(--primary);
+  border-radius: 0;
+  background-color: var(--primary);
+  background-image: var(--voxel-top);
+  border: var(--voxel-side);
   color: var(--on-primary);
   font-weight: 700;
   letter-spacing: 0.01em;
-  box-shadow: 0 6px 16px rgba(63, 92, 67, 0.26);
-  transition: background 140ms ease, transform 140ms ease;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.1s var(--ease-standard),
+    box-shadow 0.1s var(--ease-standard);
 }
 
 .btn-hero:hover {
-  background: var(--primary-hover);
-  border-color: var(--primary-hover);
-  transform: translateY(-1px);
+  background-color: var(--primary-hover);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-hero:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
 }
 
 .btn-hero:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
   transform: none;
 }
@@ -179,24 +226,34 @@ body::before {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.75rem 1.2rem;
-  border-radius: 9999px;
-  border: 1px solid var(--line3);
-  background: var(--surface);
-  color: var(--ink);
-  font-weight: 600;
-  transition: border-color 140ms ease;
+  border-radius: 0;
+  border: var(--voxel-side);
+  background-color: var(--yellow);
+  background-image: var(--voxel-top);
+  color: #16324a;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.1s var(--ease-standard),
+    box-shadow 0.1s var(--ease-standard);
 }
 
 .btn-ghost:hover {
-  border-color: var(--primary);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-ghost:active {
+  transform: translate(3px, 3px);
+  box-shadow: none;
 }
 
 .btn-ghost:focus-visible,
 .btn-hero:focus-visible,
 .icon-btn:focus-visible,
 .chip:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--ring);
+  outline: 3px solid var(--ring);
+  outline-offset: 3px;
 }
 
 /* Icon-only button (theme toggle, burger, month nav) */
@@ -206,33 +263,43 @@ body::before {
   justify-content: center;
   width: 40px;
   height: 40px;
-  border-radius: 11px;
-  border: 1px solid var(--line3);
+  border-radius: 0;
+  border: var(--voxel-side);
   background: var(--surface);
   color: var(--ink);
-  transition: border-color 140ms ease;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.1s var(--ease-standard),
+    box-shadow 0.1s var(--ease-standard);
 }
 
 .icon-btn:hover {
-  border-color: var(--primary);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-md);
+}
+
+.icon-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
 }
 
 /* Inputs: large, readable, accessible */
 .input {
   width: 100%;
-  border-radius: 13px;
-  border: 1px solid var(--field-line);
+  border-radius: 0;
+  border: var(--voxel-side);
   background: var(--field);
   color: var(--ink);
   padding: 0.8rem 0.95rem;
   font-size: 0.95rem;
   line-height: 1.4;
+  box-shadow: var(--shadow-sm);
 }
 
 .input:focus {
-  outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 28%, transparent);
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
+  box-shadow: var(--shadow-md);
 }
 
 .input::placeholder {
@@ -251,44 +318,50 @@ textarea.input {
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
-  padding: 11px 18px;
-  border-radius: 9999px;
-  border: 1px solid var(--line3);
+  padding: 10px 16px;
+  border-radius: 0;
+  border: 3px solid var(--line);
   background: var(--surface);
   color: var(--ink);
   font-size: 0.9rem;
-  font-weight: 600;
-  transition: border-color 140ms ease, background 140ms ease;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.1s var(--ease-standard),
+    box-shadow 0.1s var(--ease-standard);
 }
 
 .chip:hover {
-  border-color: var(--primary);
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow-md);
 }
 
 .chip--active {
   background: var(--primary);
-  border-color: var(--primary);
+  background-image: var(--voxel-top);
   color: var(--on-primary);
 }
 
 /* Section header eyebrow */
 .eyebrow {
-  font-size: 0.875rem;
-  font-weight: 700;
+  font-family: var(--font-display-pixel);
+  font-size: 0.7rem;
+  font-weight: 400;
   color: var(--eyebrow);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
+  line-height: 1.6;
 }
 
 /* Badges */
 .badge-price {
   display: inline-flex;
   align-items: center;
-  padding: 5px 12px;
-  border-radius: 9999px;
-  background: var(--sage-tint);
-  color: var(--pill-text);
-  border: 1px solid var(--line);
+  padding: 4px 10px;
+  border-radius: 0;
+  background: var(--accent);
+  color: #0a2416;
+  border: 2px solid var(--line);
   font-size: 0.8125rem;
   font-weight: 700;
 }
@@ -296,11 +369,11 @@ textarea.input {
 .badge-soon {
   display: inline-flex;
   align-items: center;
-  padding: 4px 10px;
-  border-radius: 9999px;
-  background: var(--clay-tint);
-  color: var(--clay);
-  border: 1px solid var(--panel-line);
+  padding: 3px 9px;
+  border-radius: 0;
+  background: var(--yellow);
+  color: #16324a;
+  border: 2px solid var(--line);
   font-size: 0.75rem;
   font-weight: 700;
 }
@@ -311,47 +384,45 @@ textarea.input {
   align-items: center;
   gap: 0.4rem;
   padding: 4px 12px;
-  border-radius: 9999px;
-  border: 1px solid var(--line);
+  border-radius: 0;
+  border: 2px solid var(--line);
   background: var(--pill-bg);
   color: var(--pill-text);
   font-size: 0.8125rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .pill--approved {
-  background: var(--sage-tint);
-  color: var(--primary);
-  border-color: color-mix(in srgb, var(--primary) 30%, var(--line));
+  background: var(--accent);
+  color: #0a2416;
 }
 
 .pill--requested {
-  background: var(--clay-tint);
-  color: var(--clay);
-  border-color: color-mix(in srgb, var(--clay) 30%, var(--line));
+  background: var(--yellow);
+  color: #16324a;
 }
 
 .pill--rejected,
 .pill--canceled {
-  background: color-mix(in srgb, var(--danger) 10%, transparent);
-  color: var(--danger);
-  border-color: color-mix(in srgb, var(--danger) 30%, var(--line));
+  background: var(--danger);
+  color: #ffffff;
 }
 
 .dot {
   display: inline-block;
-  width: 8px;
-  height: 8px;
-  border-radius: 9999px;
+  width: 9px;
+  height: 9px;
+  border-radius: 0;
+  border: 2px solid var(--line);
   background: var(--muted2);
 }
 
 .dot--approved {
-  background: var(--primary);
+  background: var(--accent);
 }
 
 .dot--requested {
-  background: var(--clay);
+  background: var(--yellow);
 }
 
 .dot--rejected,
@@ -359,26 +430,61 @@ textarea.input {
   background: var(--danger);
 }
 
-/* Dark gradient band section (care steps, final CTA) */
+/* Dark band sections (care steps, final CTA) */
 .band {
   background: var(--band-bg);
   color: var(--band-text);
-  border-radius: 24px;
+  border-radius: 0;
+  border: 3px solid var(--line);
+  box-shadow: var(--shadow-lg);
 }
 
 .band--gradient {
-  background: linear-gradient(135deg, #3f5c43, #2b3a2e);
-  color: #f3f0e8;
-  border-radius: 24px;
+  background: var(--band-bg);
+  color: var(--band-text);
+  border-radius: 0;
+  border: 3px solid var(--line);
+  border-top: 14px solid var(--yellow);
+  box-shadow: var(--shadow-lg);
 }
 
-/* Brand logo mark */
+/* Brand logo mark / avatar tile */
 .logo-mark {
   display: grid;
   place-items: center;
-  border-radius: 13px;
-  background: linear-gradient(150deg, #5a7d5a, #3f5c43);
-  color: #faf8f4;
+  border-radius: 0;
+  background: var(--yellow);
+  border: 3px solid var(--line);
+  color: #16324a;
+}
+
+/* Voxel artwork frames and tiles */
+.voxel-frame {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: var(--voxel-side);
+  box-shadow: var(--shadow-md);
+  padding: 10px;
+}
+
+.voxel-frame__art {
+  width: 100%;
+  height: 100%;
+}
+
+.voxel-tile {
+  display: grid;
+  place-items: center;
+  border: 3px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  padding: 5px;
+  flex-shrink: 0;
+}
+
+.voxel-tile__art {
+  width: 100%;
+  height: 100%;
 }
 
 /* Chat typing indicator */
@@ -395,9 +501,9 @@ textarea.input {
 
 .typing-dot {
   display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 9999px;
+  width: 7px;
+  height: 7px;
+  border-radius: 0;
   background: var(--muted);
   animation: wbdot 1.2s infinite;
 }
@@ -444,8 +550,8 @@ textarea.input {
 
 .calendar-day {
   height: 4rem;
-  border-radius: 12px;
-  border-width: 1px;
+  border-radius: 0;
+  border-width: 2px;
   text-align: left;
   padding: 0.6rem 0.75rem;
   transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
@@ -463,7 +569,8 @@ textarea.input {
 }
 
 .calendar-day:focus-visible {
-  box-shadow: 0 0 0 3px var(--ring);
+  outline: 3px solid var(--ring);
+  outline-offset: 2px;
 }
 
 .calendar-day--out {
@@ -472,14 +579,14 @@ textarea.input {
 
 /* TODAY: primary-tinted border glow */
 .day--today {
-  border-color: color-mix(in srgb, var(--primary) 45%, var(--line2));
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 22%, transparent);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary);
 }
 
 /* SELECTED: solid primary */
 .day--selected {
   background: var(--primary);
-  border-color: var(--primary);
+  border-color: var(--line);
   color: var(--on-primary);
 }
 
@@ -492,7 +599,15 @@ textarea.input {
   .card--hover:hover,
   .btn-hero,
   .btn-hero:hover,
+  .btn-hero:active,
+  .btn-ghost,
+  .btn-ghost:hover,
+  .btn-ghost:active,
+  .icon-btn,
+  .icon-btn:hover,
+  .icon-btn:active,
   .chip,
+  .chip:hover,
   .calendar-day,
   .calendar-day:hover {
     transition: none;

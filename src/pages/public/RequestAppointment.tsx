@@ -40,7 +40,7 @@ function Chip({
 function StepLabel({ n, children }: { n: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-2 text-sm font-bold">
-      <span style={{ color: "var(--primary)" }}>{n} ·</span>
+      <span style={{ color: "var(--link)" }}>{n} ·</span>
       <span>{children}</span>
     </div>
   );
@@ -389,7 +389,7 @@ export default function RequestAppointment() {
                 className="font-display grid place-items-center h-[30px] w-[30px] rounded-full text-sm font-extrabold shrink-0"
                 style={{
                   background: "var(--sage-tint)",
-                  color: "var(--primary)",
+                  color: "var(--link)",
                 }}
                 aria-hidden
               >
@@ -404,13 +404,13 @@ export default function RequestAppointment() {
 
         <div className="band--gradient p-6 space-y-3">
           <h2 className="text-lg font-bold">Prefer to just ask?</h2>
-          <p className="text-sm" style={{ color: "#cdd6c6" }}>
+          <p className="text-sm" style={{ color: "var(--band-muted)" }}>
             Willow, our care assistant, can answer questions and walk you
             through scheduling any time.
           </p>
           <Link
             to="/help"
-            className="btn-hero !bg-[#f3f0e8] !text-[#2b3a2e] !border-[#f3f0e8] hover:!bg-white"
+            className="btn-hero"
           >
             Chat with Willow
           </Link>

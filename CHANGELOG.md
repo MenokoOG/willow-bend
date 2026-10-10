@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Voxel Art design system** (see ADR 0004): the whole site is re-skinned
+  with a bright sky/orange/green palette, chunky outlines, hard offset
+  "cube shadows", square corners and the Press Start 2P / Space Grotesk /
+  VT323 type stack, with a night variant for dark mode.
+- **Generated artwork replaces every image placeholder**: an isometric
+  voxel SVG renderer (`src/graphics/`) draws the hero clinic diorama, the
+  three care-team busts, the brand cube logo, the Willow mascot (chat
+  avatar and promo) and the service icons. No external image API is used.
+- `public/favicon.svg`, `public/og-image.png` (regenerate with
+  `node scripts/generate-og.mjs`) and `og:image` / `twitter:image` tags.
+- `tests/voxel.test.ts` covering face culling, determinism and sprites.
+- ADR 0004 documenting the art direction and the generated-graphics choice.
 - **Willow reports to Heimdall**: `netlify/lib/heimdall.ts` sends one
   counts-only event per chat request (mode, degraded, latency band, error
   class) to the Heimdall sink. Visitor text is never sent; the sink rejects
@@ -46,6 +58,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Theme tokens remapped to the Voxel palette; coloured text now uses a new
+  `--link` token (WCAG AA) instead of `--primary`, which is fill-only.
+  Tailwind `borderRadius` is forced to `0px`; fonts changed from
+  Bricolage Grotesque/Figtree to Press Start 2P/Space Grotesk/VT323.
+  Supersedes the palette/typography of ADR 0002.
 - Admin allowlist now reads from the `VITE_ADMIN_EMAILS` env var
   (comma-separated) instead of hardcoded emails in the source, keeping
   real addresses out of the repo. Removed the unused duplicate allowlist

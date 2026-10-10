@@ -34,7 +34,7 @@ const LINK_COLUMNS: {
 export default function Footer() {
   return (
     <footer
-      className="border-t"
+      className="border-t-4"
       style={{
         borderColor: "var(--line)",
         background: "var(--panel)",
@@ -67,7 +67,7 @@ export default function Footer() {
               <div>Meridian, ID 83642</div>
               <div>
                 <a
-                  className="hover:underline underline-offset-4"
+                  className="underline underline-offset-4"
                   href="tel:+12085550142"
                 >
                   (208) 555-0142
@@ -75,7 +75,7 @@ export default function Footer() {
               </div>
               <div>
                 <a
-                  className="hover:underline underline-offset-4"
+                  className="underline underline-offset-4"
                   href="mailto:hello@willowbendclinic.example"
                 >
                   hello@willowbendclinic.example
@@ -107,7 +107,7 @@ export default function Footer() {
 
         <div
           className="mt-12 flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between pt-6"
-          style={{ borderTop: "1px solid var(--panel-line)" }}
+          style={{ borderTop: "3px solid var(--line)" }}
         >
           <div className="text-xs" style={{ color: "var(--muted2)" }}>
             © {new Date().getFullYear()} Willow Bend Family Clinic. All rights
