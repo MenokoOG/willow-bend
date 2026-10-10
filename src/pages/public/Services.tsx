@@ -1,6 +1,25 @@
 import { Link } from "react-router-dom";
 import usePageMeta from "../../seo/usePageMeta";
 import { SERVICES } from "./servicesData";
+import { VoxelTile } from "../../graphics/VoxelArt";
+import { serviceIcon, type ServiceIcon } from "../../graphics/scenes";
+import type { SpriteIcon } from "../../graphics/sprites";
+
+const ICON_FOR: Record<string, SpriteIcon | ServiceIcon> = {
+  "sick-visit": "cross",
+  physicals: "ball",
+  "med-review": "pill",
+  "chronic-care": "stethoscope",
+  "house-calls": "house",
+  functional: "flower",
+};
+const SPRITE_KINDS: SpriteIcon[] = ["heart", "ball", "cross", "stethoscope"];
+const VOXEL_ICONS = Object.fromEntries(
+  (["blocks", "flower", "pill", "house"] as ServiceIcon[]).map((k) => [
+    k,
+    serviceIcon(k),
+  ]),
+);
 
 function CheckIcon() {
   return (
@@ -9,7 +28,7 @@ function CheckIcon() {
       height="16"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="var(--primary)"
+      stroke="var(--link)"
       strokeWidth="2.2"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -58,25 +77,21 @@ export default function Services() {
           <div
             key={s.id}
             className="card card--hover p-6 sm:p-7 flex flex-col gap-4"
-            style={{ borderRadius: 22 }}
           >
             <div className="flex items-start justify-between gap-3">
-              <div
-                className="grid place-items-center"
-                style={{
-                  height: 50,
-                  width: 50,
-                  borderRadius: 14,
-                  background:
-                    s.tint === "sage" ? "var(--sage-tint)" : "var(--clay-tint)",
-                  color: s.tint === "sage" ? "var(--primary)" : "var(--clay)",
-                }}
-                aria-hidden
-              >
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 21c-4-2.5-7-5.8-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.2-3 7.5-7 10Z" />
-                </svg>
-              </div>
+              {SPRITE_KINDS.includes(ICON_FOR[s.id] as SpriteIcon) ? (
+                <VoxelTile
+                  sprite={ICON_FOR[s.id] as SpriteIcon}
+                  size={68}
+                  tint={s.tint}
+                />
+              ) : (
+                <VoxelTile
+                  grid={VOXEL_ICONS[ICON_FOR[s.id]]}
+                  size={68}
+                  tint={s.tint}
+                />
+              )}
 
               <div className="flex flex-col items-end gap-2">
                 <span className="badge-price">{s.price}</span>
@@ -115,11 +130,8 @@ export default function Services() {
       {/* Insurance + emergencies */}
       <div className="grid gap-5 md:grid-cols-2">
         <div
-          className="rounded-3xl p-6 sm:p-8 space-y-3"
-          style={{
-            background: "var(--panel)",
-            border: "1px solid var(--panel-line)",
-          }}
+          className="card p-6 sm:p-8 space-y-3"
+          style={{ background: "var(--panel)" }}
         >
           <h2 className="text-xl font-bold">Insurance &amp; payment</h2>
           <p className="text-sm" style={{ color: "var(--muted)" }}>
@@ -130,7 +142,7 @@ export default function Services() {
           <Link
             to="/contact"
             className="inline-block text-sm font-semibold"
-            style={{ color: "var(--primary)" }}
+            style={{ color: "var(--link)" }}
           >
             Ask about your plan →
           </Link>
@@ -138,7 +150,7 @@ export default function Services() {
 
         <div className="band--gradient p-6 sm:p-8 space-y-3">
           <h2 className="text-xl font-bold">A note on emergencies</h2>
-          <p className="text-sm" style={{ color: "#cdd6c6" }}>
+          <p className="text-sm" style={{ color: "var(--band-muted)" }}>
             This site is for general information and appointment requests — it
             is not intended for emergencies. In an emergency, call 911 or go to
             the nearest emergency department.

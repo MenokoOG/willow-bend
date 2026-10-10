@@ -2,36 +2,30 @@ import { useState } from "react";
 import { NavLink, Link, useLocation } from "react-router-dom";
 import ThemeToggle from "../ui/ThemeToggle";
 import { useAuth } from "../auth/AuthContext";
+import { VoxelSvg } from "../graphics/VoxelArt";
+import { logoCube } from "../graphics/scenes";
 
 const baseLink =
-  "px-3 py-2 rounded-xl text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--ring)]";
+  "px-3 py-2 text-sm font-bold border-2 transition focus:outline-none focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2 focus-visible:outline-[color:var(--ring)]";
 
 function navClass(isActive: boolean) {
   return [
     baseLink,
     isActive
-      ? "bg-[color:var(--sage-tint)] text-[color:var(--ink)]"
-      : "text-[color:var(--ink2)] hover:bg-[color:var(--sage-tint)] hover:text-[color:var(--ink)]",
+      ? "bg-[color:var(--yellow)] text-[#16324a] border-[color:var(--line)]"
+      : "border-transparent text-[color:var(--ink2)] hover:bg-[color:var(--sage-tint)] hover:border-[color:var(--line)] hover:text-[color:var(--ink)]",
   ].join(" ");
 }
 
+const LOGO_CUBE = logoCube();
+
 export function LogoMark({ size = 40 }: { size?: number }) {
   return (
-    <div
-      className="logo-mark"
+    <VoxelSvg
+      grid={LOGO_CUBE}
+      unit={8}
       style={{ height: size, width: size }}
-      aria-hidden
-    >
-      <svg
-        width={size * 0.55}
-        height={size * 0.55}
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        aria-hidden
-      >
-        <path d="M12 21c-4-2.5-7-5.8-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.2-3 7.5-7 10Z" />
-      </svg>
-    </div>
+    />
   );
 }
 
@@ -50,9 +44,9 @@ export default function Header() {
 
   return (
     <header
-      className="sticky top-0 z-40 backdrop-blur-md"
+      className="sticky top-0 z-40"
       style={{
-        borderBottom: "1px solid var(--line)",
+        borderBottom: "4px solid var(--line)",
         background: "var(--header-bg)",
       }}
     >
@@ -90,7 +84,7 @@ export default function Header() {
               to="/login"
               state={{ from: location.pathname }}
               className="hidden sm:inline-block text-sm font-semibold px-2"
-              style={{ color: "var(--primary)" }}
+              style={{ color: "var(--link)" }}
             >
               Patient login
             </Link>
@@ -100,7 +94,7 @@ export default function Header() {
                 <Link
                   to="/admin"
                   className="hidden sm:inline-block text-sm font-semibold px-2"
-                  style={{ color: "var(--primary)" }}
+                  style={{ color: "var(--link)" }}
                 >
                   Admin
                 </Link>
@@ -108,7 +102,7 @@ export default function Header() {
                 <Link
                   to="/patient"
                   className="hidden sm:inline-block text-sm font-semibold px-2"
-                  style={{ color: "var(--primary)" }}
+                  style={{ color: "var(--link)" }}
                 >
                   Portal
                 </Link>
@@ -170,7 +164,7 @@ export default function Header() {
         <nav
           aria-label="Mobile"
           className="md:hidden"
-          style={{ borderTop: "1px solid var(--line)" }}
+          style={{ borderTop: "3px solid var(--line)" }}
         >
           <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 py-3 flex flex-col gap-1">
             {NAV_ITEMS.map((item) => (

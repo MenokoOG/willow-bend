@@ -1,4 +1,8 @@
 import type { ChatMessage } from "../chatbot/types";
+import { VoxelSvg } from "../graphics/VoxelArt";
+import { willowMascot } from "../graphics/scenes";
+
+const MASCOT = willowMascot();
 
 /** Shared presentational pieces for the Willow chat surfaces
  *  (full page at /help and the floating widget). Engine logic lives
@@ -24,11 +28,11 @@ export function SparkleIcon({ size = 16 }: { size?: number }) {
 export function WillowAvatar({ size = 34 }: { size?: number }) {
   return (
     <span
-      className="logo-mark shrink-0"
-      style={{ height: size, width: size, borderRadius: size * 0.32 }}
+      className="logo-mark shrink-0 p-0.5"
+      style={{ height: size, width: size }}
       aria-hidden
     >
-      <SparkleIcon size={size * 0.5} />
+      <VoxelSvg grid={MASCOT} unit={8} className="h-full w-full" />
     </span>
   );
 }
@@ -38,8 +42,8 @@ export function TypingDots() {
     <div className="flex items-end gap-2" aria-label="Willow is typing">
       <WillowAvatar />
       <div
-        className="flex items-center gap-1 rounded-2xl rounded-bl-md px-4 py-3.5"
-        style={{ background: "var(--sage-tint)" }}
+        className="flex items-center gap-1 px-4 py-3.5"
+        style={{ background: "var(--sage-tint)", border: "2px solid var(--line)" }}
       >
         <span className="typing-dot" />
         <span className="typing-dot" />
@@ -56,8 +60,12 @@ export function ChatBubble({ message }: { message: ChatMessage }) {
     return (
       <div className="flex justify-end">
         <div
-          className="max-w-[78%] rounded-2xl rounded-br-md px-4 py-3 text-sm whitespace-pre-wrap"
-          style={{ background: "var(--primary)", color: "var(--on-primary)" }}
+          className="max-w-[78%] px-4 py-3 text-sm whitespace-pre-wrap"
+          style={{
+            background: "var(--primary)",
+            color: "var(--on-primary)",
+            border: "2px solid var(--line)",
+          }}
         >
           {message.text}
         </div>
@@ -69,8 +77,12 @@ export function ChatBubble({ message }: { message: ChatMessage }) {
     <div className="flex items-end gap-2">
       <WillowAvatar />
       <div
-        className="max-w-[82%] rounded-2xl rounded-bl-md px-4 py-3 text-sm whitespace-pre-wrap"
-        style={{ background: "var(--sage-tint)", color: "var(--ink2)" }}
+        className="max-w-[82%] px-4 py-3 text-sm whitespace-pre-wrap"
+        style={{
+          background: "var(--sage-tint)",
+          color: "var(--ink2)",
+          border: "2px solid var(--line)",
+        }}
       >
         {message.text}
       </div>

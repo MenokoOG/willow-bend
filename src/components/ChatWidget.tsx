@@ -227,7 +227,7 @@ export default function ChatWidget() {
                 <WillowAvatar size={34} />
                 <div>
                   <div className="font-display text-sm font-bold">Willow</div>
-                  <div className="text-xs" style={{ color: "#6a9070" }}>
+                  <div className="text-xs" style={{ color: "var(--link)" }}>
                     ● Online — care assistant
                   </div>
                 </div>
@@ -237,7 +237,7 @@ export default function ChatWidget() {
                 <Link
                   to="/help"
                   className="text-xs font-semibold px-2"
-                  style={{ color: "var(--primary)" }}
+                  style={{ color: "var(--link)" }}
                   onClick={() => setOpen(false)}
                 >
                   Full chat

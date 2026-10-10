@@ -197,7 +197,7 @@ export default function HelpBot() {
         <Link
           to={chatRole === "patient" ? "/patient" : "/"}
           className="text-sm font-semibold px-1"
-          style={{ color: "var(--primary)" }}
+          style={{ color: "var(--link)" }}
         >
           ← Back to {chatRole === "patient" ? "portal" : "home"}
         </Link>
@@ -217,7 +217,7 @@ export default function HelpBot() {
             <WillowAvatar size={36} />
             <div>
               <div className="font-display text-sm font-bold">Willow</div>
-              <div className="text-xs" style={{ color: "#6a9070" }}>
+              <div className="text-xs" style={{ color: "var(--link)" }}>
                 ● Online — care assistant
               </div>
             </div>

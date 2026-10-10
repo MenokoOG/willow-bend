@@ -6,7 +6,7 @@ type Theme = "dark" | "light";
 function setThemeColorMeta(theme: Theme) {
   const meta = document.querySelector('meta[name="theme-color"]');
   if (!meta) return;
-  meta.setAttribute("content", theme === "light" ? "#faf8f4" : "#10140d");
+  meta.setAttribute("content", theme === "light" ? "#a8e0f0" : "#0b1d2c");
 }
 
 function applyTheme(theme: Theme) {

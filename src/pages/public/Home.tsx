@@ -2,95 +2,77 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
 import { usePageContent } from "../../hooks/index";
 import EditableBlock from "../../cms/EditableBlock";
+import { VoxelFrame, VoxelSvg, VoxelTile } from "../../graphics/VoxelArt";
+import {
+  clinicScene,
+  coordinatorBust,
+  nurseBust,
+  physicianBust,
+  serviceIcon,
+  willowMascot,
+} from "../../graphics/scenes";
 
 function Eyebrow({ children }: { children: React.ReactNode }) {
   return <div className="eyebrow">{children}</div>;
 }
 
-function IconTile({
-  tint,
-  children,
-}: {
-  tint: "sage" | "clay";
-  children: React.ReactNode;
-}) {
-  return (
-    <div
-      className="grid place-items-center"
-      style={{
-        height: 50,
-        width: 50,
-        borderRadius: 14,
-        background: tint === "sage" ? "var(--sage-tint)" : "var(--clay-tint)",
-        color: tint === "sage" ? "var(--primary)" : "var(--clay)",
-      }}
-      aria-hidden
-    >
-      {children}
-    </div>
-  );
-}
-
-function ImagePlaceholder({
-  label,
-  className = "",
-  ratio,
-}: {
-  label: string;
-  className?: string;
-  ratio: string;
-}) {
-  return (
-    <div
-      role="img"
-      aria-label={label}
-      className={`grid place-items-center rounded-3xl border ${className}`}
-      style={{
-        aspectRatio: ratio,
-        background: "var(--img-bg)",
-        borderColor: "var(--line2)",
-      }}
-    >
-      <span
-        className="px-6 text-center text-sm"
-        style={{ color: "var(--img-label)" }}
-      >
-        {label}
-      </span>
-    </div>
-  );
-}
+// Scenes are built once at module load; rendering reuses the same grids.
+const HERO_ART = clinicScene();
+const TEAM_ART = {
+  physician: physicianBust(),
+  nurse: nurseBust(),
+  coordinator: coordinatorBust(),
+};
+const SERVICE_ART = {
+  blocks: serviceIcon("blocks"),
+  flower: serviceIcon("flower"),
+  pill: serviceIcon("pill"),
+  house: serviceIcon("house"),
+};
+const WILLOW_ART = willowMascot();
 
 const HOME_SERVICES = [
   {
     title: "Primary care",
     desc: "Checkups, prevention, and everyday health for adults and kids.",
     tint: "sage" as const,
+    art: "heart" as const,
+    kind: "sprite" as const,
   },
   {
     title: "Pediatrics",
     desc: "Gentle, thorough care for infants through teens.",
     tint: "clay" as const,
+    art: "blocks" as const,
+    kind: "voxel" as const,
   },
   {
     title: "Women's health",
     desc: "Wellness exams, screenings, and personalized guidance.",
     tint: "sage" as const,
+    art: "flower" as const,
+    kind: "voxel" as const,
   },
   {
     title: "Sports & school physicals",
     desc: "Quick, careful exams to keep the whole family active.",
     tint: "clay" as const,
+    art: "ball" as const,
+    kind: "sprite" as const,
   },
   {
     title: "Chronic care",
     desc: "Long-term support for diabetes, blood pressure, and more.",
     tint: "sage" as const,
+    art: "pill" as const,
+    kind: "voxel" as const,
   },
   {
     title: "House calls",
     desc: "In-home assessments for loved ones who can't come in.",
     tint: "clay" as const,
+    art: "house" as const,
+    kind: "voxel" as const,
   },
 ];
 
@@ -99,19 +81,25 @@ const CARE_TEAM = [
     name: "Dr. Ana Reyes, MD",
     role: "Family Medicine",
     bio: "Believes the best medicine starts with listening. 12 years caring for families.",
-    imgLabel: "Portrait — physician",
+    art: "physician" as const,
+    imgLabel: "Illustration: voxel-art physician in a white coat and glasses",
+    bg: "#bdeccd",
   },
   {
     name: "Jordan Blake, FNP",
     role: "Pediatrics & Wellness",
     bio: "Makes even the most nervous kids feel at ease during visits.",
-    imgLabel: "Portrait — nurse practitioner",
+    art: "nurse" as const,
+    imgLabel: "Illustration: voxel-art nurse practitioner in teal scrubs",
+    bg: "#ffd9c7",
   },
   {
     name: "Maria Santos, RN",
     role: "Care Coordinator",
     bio: "Your first call for questions, refills, and getting the right appointment.",
-    imgLabel: "Portrait — care coordinator",
+    art: "coordinator" as const,
+    imgLabel: "Illustration: voxel-art care coordinator in a yellow cardigan",
+    bg: "#fff1c7",
   },
 ];
 
@@ -205,29 +193,17 @@ export default function Home() {
         </div>
 
         <div className="relative">
-          <ImagePlaceholder
-            label="Warm photo — clinician with a patient or family"
-            ratio="4 / 5"
+          <VoxelFrame
+            grid={HERO_ART}
+            label="Illustration: the Willow Bend clinic building with a garden, a doctor and two kids out front"
+            ratio="1 / 1"
+            unit={10}
           />
           <div
             className="card absolute -bottom-4 left-4 right-4 sm:left-8 sm:right-auto flex items-center gap-3 px-4 py-3"
             style={{ boxShadow: "0 18px 34px -22px rgba(43,58,46,0.5)" }}
           >
-            <IconTile tint="sage">
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                aria-hidden
-              >
-                <circle cx="12" cy="12" r="9" />
-                <path d="M12 7v5l3 2" />
-              </svg>
-            </IconTile>
+            <VoxelTile sprite="heart" size={48} tint="clay" />
             <div>
               <div className="text-sm font-bold">Same-week visits</div>
               <div className="text-xs" style={{ color: "var(--muted)" }}>
@@ -240,11 +216,8 @@ export default function Home() {
 
       {/* ============ TRUST STRIP ============ */}
       <section
-        className="rounded-3xl px-6 py-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
-        style={{
-          background: "var(--panel)",
-          border: "1px solid var(--panel-line)",
-        }}
+        className="card px-6 py-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        style={{ background: "var(--panel)" }}
       >
         {[
           "Most insurance accepted",
@@ -255,7 +228,11 @@ export default function Home() {
           <div key={t} className="flex items-center gap-3">
             <span
               className="grid place-items-center h-8 w-8 rounded-full shrink-0"
-              style={{ background: "var(--sage-tint)", color: "var(--primary)" }}
+              style={{
+                background: "var(--accent)",
+                color: "#0a2416",
+                border: "2px solid var(--line)",
+              }}
               aria-hidden
             >
               <svg
@@ -288,7 +265,7 @@ export default function Home() {
           <Link
             to="/services"
             className="text-sm font-semibold"
-            style={{ color: "var(--primary)" }}
+            style={{ color: "var(--link)" }}
           >
             View all services →
           </Link>
@@ -297,17 +274,11 @@ export default function Home() {
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {HOME_SERVICES.map((s) => (
             <div key={s.title} className="card card--hover p-6 space-y-3">
-              <IconTile tint={s.tint}>
-                <svg
-                  width="22"
-                  height="22"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  aria-hidden
-                >
-                  <path d="M12 21c-4-2.5-7-5.8-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 4.2-3 7.5-7 10Z" />
-                </svg>
-              </IconTile>
+              {s.kind === "sprite" ? (
+                <VoxelTile sprite={s.art} size={68} tint={s.tint} />
+              ) : (
+                <VoxelTile grid={SERVICE_ART[s.art]} size={68} tint={s.tint} />
+              )}
               <h3 className="text-lg font-bold">{s.title}</h3>
               <p className="text-sm" style={{ color: "var(--muted)" }}>
                 {s.desc}
@@ -329,16 +300,19 @@ export default function Home() {
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {CARE_TEAM.map((p) => (
             <div key={p.name} className="card card--hover overflow-hidden">
-              <ImagePlaceholder
+              <VoxelFrame
+                grid={TEAM_ART[p.art]}
                 label={p.imgLabel}
                 ratio="5 / 4"
-                className="!rounded-none border-0"
+                background={p.bg}
+                unit={10}
+                className="!border-0 !border-b-[3px] !border-b-[color:var(--line)] !shadow-none"
               />
               <div className="p-6 space-y-1.5">
                 <h3 className="text-lg font-bold">{p.name}</h3>
                 <div
                   className="text-sm font-semibold"
-                  style={{ color: "var(--primary)" }}
+                  style={{ color: "var(--link)" }}
                 >
                   {p.role}
                 </div>
@@ -356,7 +330,7 @@ export default function Home() {
         <div className="space-y-2">
           <div
             className="eyebrow"
-            style={{ color: "#a8b89e" }}
+            style={{ color: "var(--yellow)" }}
           >
             Getting started is easy
           </div>
@@ -369,12 +343,16 @@ export default function Home() {
           {CARE_STEPS.map((s) => (
             <div
               key={s.n}
-              className="rounded-2xl p-6 space-y-3"
-              style={{ border: "1px solid var(--band-line)" }}
+              className="p-6 space-y-3"
+              style={{ border: "3px solid var(--band-line)" }}
             >
               <span
-                className="font-display grid place-items-center h-10 w-10 rounded-full text-lg font-extrabold"
-                style={{ background: "#cdd8bf", color: "#2b3a2e" }}
+                className="font-display grid place-items-center h-10 w-10 text-lg font-extrabold"
+                style={{
+                  background: "var(--yellow)",
+                  color: "#16324a",
+                  border: "3px solid var(--line)",
+                }}
                 aria-hidden
               >
                 {s.n}
@@ -390,11 +368,8 @@ export default function Home() {
 
       {/* ============ WILLOW (AI ASSISTANT) PROMO ============ */}
       <section
-        className="rounded-3xl p-6 sm:p-10 grid gap-10 lg:grid-cols-2 lg:items-center"
-        style={{
-          background: "var(--ai-grad)",
-          border: "1px solid var(--panel-line)",
-        }}
+        className="card p-6 sm:p-10 grid gap-10 lg:grid-cols-2 lg:items-center"
+        style={{ background: "var(--ai-grad)", boxShadow: "var(--shadow-lg)" }}
       >
         <div className="space-y-5">
           <span className="pill">
@@ -424,36 +399,34 @@ export default function Home() {
         <div className="card p-5 space-y-4" aria-hidden>
           <div
             className="flex items-center gap-3 pb-3"
-            style={{ borderBottom: "1px solid var(--line2)" }}
+            style={{ borderBottom: "3px solid var(--line)" }}
           >
-            <span className="logo-mark h-9 w-9">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2l1.9 5.8L20 9.7l-5 3.8 1.9 6L12 15.8 7.1 19.5l1.9-6-5-3.8 6.1-1.9L12 2Z" />
-              </svg>
+            <span className="logo-mark h-11 w-11 p-0.5">
+              <VoxelSvg grid={WILLOW_ART} unit={8} className="h-full w-full" />
             </span>
             <div>
               <div className="text-sm font-bold">Willow</div>
-              <div className="text-xs" style={{ color: "#6a9070" }}>
+              <div className="text-xs font-semibold" style={{ color: "var(--link)" }}>
                 ● Online
               </div>
             </div>
           </div>
           <div
-            className="rounded-2xl rounded-bl-md px-4 py-3 text-sm max-w-[85%]"
-            style={{ background: "var(--sage-tint)", color: "var(--ink2)" }}
+            className="px-4 py-3 text-sm max-w-[85%]"
+            style={{ background: "var(--sage-tint)", color: "var(--ink2)", border: "2px solid var(--line)" }}
           >
             Hi! I can help you book a visit, refill a request, or answer clinic
             questions. What do you need?
           </div>
           <div
-            className="rounded-2xl rounded-br-md px-4 py-3 text-sm max-w-[85%] ml-auto"
-            style={{ background: "var(--primary)", color: "var(--on-primary)" }}
+            className="px-4 py-3 text-sm max-w-[85%] ml-auto"
+            style={{ background: "var(--primary)", color: "var(--on-primary)", border: "2px solid var(--line)" }}
           >
             Can I get a sports physical this week?
           </div>
           <div
-            className="rounded-2xl rounded-bl-md px-4 py-3 text-sm max-w-[85%]"
-            style={{ background: "var(--sage-tint)", color: "var(--ink2)" }}
+            className="px-4 py-3 text-sm max-w-[85%]"
+            style={{ background: "var(--sage-tint)", color: "var(--ink2)", border: "2px solid var(--line)" }}
           >
             Yes! Use the request page and we'll follow up with same-week
             options.
@@ -466,21 +439,15 @@ export default function Home() {
         <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
           Your family deserves better care
         </h2>
-        <p className="max-w-xl mx-auto" style={{ color: "#cdd6c6" }}>
+        <p className="max-w-xl mx-auto" style={{ color: "var(--band-muted)" }}>
           New patients are welcome, and same-week appointments are usually
           available. Let's get you on the schedule.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link
-            to="/request"
-            className="btn-hero !bg-[#f3f0e8] !text-[#2b3a2e] !border-[#f3f0e8] hover:!bg-white"
-          >
+          <Link to="/request" className="btn-hero">
             Book a visit
           </Link>
-          <a
-            href="tel:+12085550142"
-            className="btn-ghost !bg-transparent !text-[#f3f0e8] !border-[rgba(255,255,255,0.35)]"
-          >
+          <a href="tel:+12085550142" className="btn-ghost">
             Call (208) 555-0142
           </a>
         </div>

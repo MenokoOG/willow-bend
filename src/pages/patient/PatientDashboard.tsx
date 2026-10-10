@@ -132,7 +132,7 @@ export default function PatientDashboard() {
           className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-semibold"
           style={{
             background: "var(--sage-tint)",
-            color: "var(--primary)",
+            color: "var(--link)",
             border: "1px solid var(--line)",
           }}
         >
@@ -192,7 +192,7 @@ export default function PatientDashboard() {
           <div className="flex items-center gap-3">
             <span
               className="font-display grid place-items-center h-10 w-10 rounded-full font-bold"
-              style={{ background: "var(--sage-tint)", color: "var(--primary)" }}
+              style={{ background: "var(--sage-tint)", color: "var(--link)" }}
               aria-hidden
             >
               {initials(profile?.displayName || email)}
@@ -219,7 +219,7 @@ export default function PatientDashboard() {
               <div className="space-y-2">
                 <div
                   className="text-xs font-bold uppercase tracking-wider"
-                  style={{ color: "#a8b89e" }}
+                  style={{ color: "var(--yellow)" }}
                 >
                   Next appointment
                 </div>
@@ -235,13 +235,13 @@ export default function PatientDashboard() {
               <div className="flex flex-wrap gap-3">
                 <Link
                   to="/patient/calendar"
-                  className="btn-hero !bg-[#f3f0e8] !text-[#2b3a2e] !border-[#f3f0e8] hover:!bg-white"
+                  className="btn-hero"
                 >
                   View calendar
                 </Link>
                 <Link
                   to="/request"
-                  className="btn-ghost !bg-transparent !text-[#f3f0e8] !border-[rgba(255,255,255,0.35)]"
+                  className="btn-ghost"
                 >
                   Request another
                 </Link>
@@ -253,7 +253,7 @@ export default function PatientDashboard() {
                 <div className="text-xl sm:text-2xl font-bold">
                   No upcoming visits
                 </div>
-                <p className="text-sm" style={{ color: "#cdd6c6" }}>
+                <p className="text-sm" style={{ color: "var(--band-muted)" }}>
                   {apptLoading
                     ? "Loading your appointments…"
                     : "Ready when you are — request a time that works for you."}
@@ -261,7 +261,7 @@ export default function PatientDashboard() {
               </div>
               <Link
                 to="/request"
-                className="btn-hero !bg-[#f3f0e8] !text-[#2b3a2e] !border-[#f3f0e8] hover:!bg-white"
+                className="btn-hero"
               >
                 Book a visit
               </Link>
@@ -327,7 +327,7 @@ export default function PatientDashboard() {
                     className="font-display grid place-items-center h-9 w-9 rounded-full text-sm font-bold shrink-0"
                     style={{
                       background: "var(--sage-tint)",
-                      color: "var(--primary)",
+                      color: "var(--link)",
                     }}
                     aria-hidden
                   >
