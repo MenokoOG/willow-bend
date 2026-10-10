@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `.github/dependabot.yml` ignoring `tailwindcss` major bumps so Dependabot
+  stops proposing the v4 upgrade that broke the Netlify build.
+
 - **Voxel Art design system** (see ADR 0004): the whole site is re-skinned
   with a bright sky/orange/green palette, chunky outlines, hard offset
   "cube shadows", square corners and the Press Start 2P / Space Grotesk /
