@@ -1,0 +1,13 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    ignore:
+      # The app is built on Tailwind v3 (PostCSS plugin + tailwind.config.ts).
+      # v4 moves the PostCSS plugin to @tailwindcss/postcss and breaks the
+      # Netlify build; upgrade deliberately, not via Dependabot.
+      - dependency-name: tailwindcss
+        update-types: ["version-update:semver-major"]
