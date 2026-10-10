@@ -73,6 +73,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Netlify build: a Dependabot bump moved `tailwindcss` to 4.x, which cannot
+  be used as a PostCSS plugin (the app targets v3). Pinned to `~3.4.17` and
+  regenerated the lockfile; `npm ci && npm run build` passes again.
+
 - Netlify build ran with a stale cached `node_modules` still containing
   tailwindcss v4 from the pre-pin era, failing with the v4 PostCSS error
   even though `package.json`/lockfile pin v3. The build command is now
