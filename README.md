@@ -62,9 +62,7 @@ approval always stays with clinic staff.
 
 ## Project conventions
 
-- `AGENTS.md` / `CLAUDE.md` — rules for contributors and AI agents
 - `CHANGELOG.md` — every PR adds an entry under `[Unreleased]`
   (Keep a Changelog; see `VERSIONING.md`)
 - `DOCUMENTATION.md` — documentation standards
-- `docs/adr/` — architecture decision records
 - Appointment approval is always human-approved — never automated.

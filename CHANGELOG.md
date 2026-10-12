@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Agent project files (`AGENTS.md`, `CLAUDE.md`, `use-case.md`, `docs/adr/`) are no longer tracked in this public repository. They stay local and are listed in `.git/info/exclude`. Earlier commits still hold them.
+
 ### Added
 
 - `.github/dependabot.yml` ignoring `tailwindcss` major bumps so Dependabot

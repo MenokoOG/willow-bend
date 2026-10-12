@@ -10,7 +10,7 @@
    so older pages restyle automatically.
    ========================================================= */
 
-/* Voxel Art palette (see docs/adr/0004). Light = daytime sky, dark = night.
+/* Voxel Art palette. Light = daytime sky, dark = night.
    `--primary` is a FILL colour (buttons, chips); use `--link` for coloured
    text on light surfaces so contrast stays WCAG AA. */
 :root {
