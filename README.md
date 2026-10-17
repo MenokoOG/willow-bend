@@ -62,7 +62,6 @@ approval always stays with clinic staff.
 
 ## Project conventions
 
-- `AGENTS.md` / `CLAUDE.md` — rules for contributors and AI agents
 - `CHANGELOG.md` — every PR adds an entry under `[Unreleased]`
   (Keep a Changelog; see `VERSIONING.md`)
 - `DOCUMENTATION.md` — documentation standards

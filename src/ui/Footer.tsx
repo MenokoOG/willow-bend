@@ -115,7 +115,7 @@ export default function Footer() {
           </div>
 
           <div className="text-xs" style={{ color: "var(--muted2)" }}>
-            Built by M3n0ko0g of classHuman AI
+            Built by M3n0ko0g
           </div>
         </div>
       </div>

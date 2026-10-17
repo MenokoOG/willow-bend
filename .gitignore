@@ -69,6 +69,11 @@ Thumbs.db
 # Claude Code local (per-machine) settings
 .claude/settings.local.json
 
+# Agent docs and portfolio notes stay local, out of the public repo
+CLAUDE.md
+AGENTS.md
+use-case.md
+
 # Real Firestore rules contain the admin emails — deploy from here
 # with `firebase deploy --only firestore:rules`. The committed
 # firestore.rules.example is the version-controlled template.
