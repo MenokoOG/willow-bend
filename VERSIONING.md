@@ -1,16 +1,16 @@
-# Versioning Policy — classHuman
+# Versioning Policy
 
-**Owner:** Lawrence Jefferson II (CTO), classHuman AI
+**Owner:** Lawrence Jefferson II (Menoko OG)
 **Last updated:** 2026-05-07
-**Applies to:** every classHuman repo (Ag3nt24, HADES, Harness, Alfheim, classHuman-pm, Ag3nt24 SDK, future products)
+**Applies to:** this repository
 
-This file is the canonical version policy. Drop a copy into every classHuman repo root. When the policy changes, edit the canonical at `F:\classHuman\menoko-og-prompt-md-library\rune-library\references\``versioning.md` first, then propagate.
+This file is the version policy for this repository.
 
 ---
 
 ## Three-tier versioning
 
-classHuman projects carry **three independent version identifiers**. Don't conflate them.
+Projects here carry **three independent version identifiers**. Don't conflate them.
 
 ### Tier 1 — Product version (semver)
 
@@ -35,7 +35,7 @@ The same product can ship `1.3.0 / v1` and `2.0.0 / v2` simultaneously during a 
 API version gets pinned in:
 - URL path (`/api/v1/...`)
 - OpenAPI spec (`info.version: "v1"`)
-- SDK package version (`Ag3nt24-sdk@v1.x.x` for v1 contract)
+- SDK package version (`example-sdk@v1.x.x` for v1 contract)
 
 ### Tier 3 — Release tag and Build tag (calendar)
 

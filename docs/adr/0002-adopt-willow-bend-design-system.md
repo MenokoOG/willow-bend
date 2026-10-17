@@ -30,7 +30,7 @@ defined.
    defined.
 4. **Calendar deviation:** the mockup's time-slot "Confirm" booking flow is
    intentionally not implemented. Appointments are requested via `/request`
-   and always approved by a human (see AGENTS.md); the patient calendar
+   and always approved by a human (a hard project rule); the patient calendar
    remains a view of real appointment data, not a self-booking surface.
 5. **Willow is presentation only.** The chat surfaces (full page `/help` and
    floating widget) were rebuilt visually; replies still come from the

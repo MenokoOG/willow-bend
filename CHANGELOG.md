@@ -61,6 +61,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Public-repo cleanup: `CLAUDE.md`, `AGENTS.md` and `use-case.md` are no
+  longer tracked (they stay local and are gitignored); the footer credit,
+  `VERSIONING.md` and README no longer reference private projects or paths.
+
 - Theme tokens remapped to the Voxel palette; coloured text now uses a new
   `--link` token (WCAG AA) instead of `--primary`, which is fill-only.
   Tailwind `borderRadius` is forced to `0px`; fonts changed from
